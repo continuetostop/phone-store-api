@@ -9,7 +9,7 @@ const ProductDetail = require('../models/ProductDetail.model');
 const GroupProduct = require('../models/GroupProduct.model');
 
 module.exports = {
-    create: (groupProductId, data, options, callback) => {
+    create: async (groupProductId, data, options, callback) => {
         //console.log(groupProductId);
         try {
 
@@ -23,60 +23,32 @@ module.exports = {
             productDetalData.price = data.price;
             let resultGroupProduct;
             let resultProductDetail;
-            let arraOptionId = [];
+            let result;
             let optionId;
             let valueOption;
-            let arrValueOption = [];
-            GroupProduct.findByPk(groupProductId).then(result => {
-                'use strict';
-                return result;
+            resultGroupProduct = await GroupProduct.findByPk(groupProductId)
+            resultProductDetail = await ProductDetail.create(productDetalData);
+
+
+            resultGroupProduct.addProduct_details([resultProductDetail.id]);
+            options.map(async (option) => {
+                try {
+                    let dataOption = await JSON.parse(option);
+                    optionId = dataOption.id;
+                    valueOption = dataOption.value;
+                    result = resultProductDetail.addOptions([optionId], { through: { value: valueOption } })
+                } catch (err) {
+                    console.log(err);
+                }
             })
-                .then((result) => {
-                    resultGroupProduct = result;
-                    return ProductDetail.create(productDetalData);
-
-                })
-
-                .then((result) => {
-                    resultGroupProduct.addProduct_details([result.id]);
-                    resultProductDetail = result;
-                    Promise.all(
-                        options.map((option) => {
-                            try {
-                                let dataOption = JSON.parse(option);
-                                arraOptionId.push(dataOption.id);
-                                arrValueOption.push(dataOption.value);
-                                optionId = arraOptionId.shift();
-                                valueOption = arrValueOption.shift();
-
-                                resultProductDetail.addOptions([optionId], { through: { value: valueOption } })
-                                   
-
-                                    .catch((err) => {
-                                        console.log(err);
-                                    })
-
-                            } catch (err) {
-                                console.log(err);
-                            }
-                        }))
-
-                })
-                .then((result) => {
-                    return callback(null, null, 200, null, '');
-
-                })
-                .catch(function (error) {
-                    return callback(1, 'create_product_detail_fail', 420, error, null);
-                });
-
-
+            return callback(null, null, 200, null, '');
         } catch (error) {
-            return callback(1, 'create_product_detail_fail', 400, error, null);
+            return callback(1, 'create_product_detail_fail', 420, error, null);
         }
     },
-    getOne: (id, data, options, callback) => {
+    getOne: async (id, callback) => {
         try {
+            let resultProductDetail;
             if (!Pieces.ValidTypeCheck(id.groupProductId, 'String', 0, 20) || !Validator.isDecimal(groupProductId)) {
                 return callback(1, 'invalid_group_product_id', 400, 'group product id is not a interger', null);
             }
@@ -84,26 +56,27 @@ module.exports = {
                 return callback(1, 'invalid_product_detail_id', 400, 'product detail id is not a interger', null);
             }
             let where = { id: id };
-
-            ProductDetail.findOne({
-                where: where,
-                attributes: attributes
-            }).then(result => {
-                'use strict';
+            try {
+                resultProductDetail = await ProductDetail.findOne({
+                    where: where,
+                    attributes: attributes
+                })
                 return callback(null, null, 200, null, result);
-            }).catch(function (error) {
+            }
+            catch (error) {
                 return callback(1, 'invail_message', 403, error, null);
-            });
+            };
 
         } catch (error) {
             return callback(1, 'invail_message', 400, error, null);
         }
     },
-    getAll: (query, callback) => {
+    getAll: async (query, callback) => {
         try {
             let where = {};
             let page = 1;
             let perPage = Constant.DEFAULT_PAGING_SIZE;
+            let resultProductDetail;
             if (Pieces.ValidTypeCheck(query.q, 'String')) {
                 where.title = { [Sequenlize.Op.like]: query.q };
             }
@@ -125,7 +98,7 @@ module.exports = {
             }
 
             let offset = perPage * (page - 1);
-            ProductDetail.findAndCountAll({
+            resultProductDetail = ProductDetail.findAndCountAll({
                 where: where,
                 limit: perPage,
                 offset: offset
@@ -160,56 +133,66 @@ module.exports = {
             return callback(1, 'Get_all_message-fail', 400, error, null);
         }
     },
-    update: (id, data, callback) => {
+    update: async (id, data, callback) => {
         try {
             let update = {};
             let where = {};
-            if (!(Pieces.ValidTypeCheck(id, 'String', 0, 20) && Validator.isDecimal(id))) {
-                return callback(1, 'Invalid_message_id', 400, 'Id of message is not a integer', null);
+            let resultProductDetail;
+
+            if (!(Pieces.ValidTypeCheck(id.groupProductId, 'String', 0, 20) && Validator.isDecimal(id))) {
+                return callback(1, 'Invalid_group_product_id', 400, 'id of group product is not a integer', null);
+            }
+            if (!(Pieces.ValidTypeCheck(id.productDetailId, 'String', 0, 20) && Validator.isDecimal(id))) {
+                return callback(1, 'Invalid_product_detail_id', 400, 'id of product detail is not a integer', null);
             }
 
-            where.id = id;
-            if (Pieces.ValidTypeCheck(data.title, 'String')) {
-                update.title = data.title;
-            }
-            if (Pieces.ValidTypeCheck(data.content, 'String')) {
-                update.content = data.content;
+            where.id = productDetailId;
+            where.groupProductId = groupProductId;
+            if (Pieces.ValidTypeCheck(data.Price, 'String')) {
+                update.Price = data.Price;
             }
 
-            update.updatedAt = new Date();
-            ProductDetail.update(update,
-                { where: where }).then(result => {
-                    "use strict";
-                    if (result !== null && (result.length > 0) && (result[0] > 0)) {
-                        return callback(null, null, 200, null, id);
-                    } else {
-                        return callback(1, 'Update_message_fail', 400, '', null);
-                    }
-                }).catch(function (error) {
-                    "use strict";
-                    return callback(1, 'Update_message_fail', 420, error, null);
 
-                });
+            try {
+                resultProductDetail = await ProductDetail.update(update,
+                    { where: where })
+                "use strict";
+                if (resultProductDetail !== null && (resultProductDetail.length > 0) && (resultProductDetail[0] > 0)) {
+                    return callback(null, null, 200, null, id);
+                } else {
+                    return callback(1, 'Update_product_detail_fail', 400, '', null);
+                }
+            } catch (error) {
+                "use strict";
+                return callback(1, 'Update_product_detail_fail', 420, error, null);
+
+            };
         } catch (error) {
             "use strict";
-            return callback(1, 'Update_message_fail', 400, error, null);
+            return callback(1, 'Update_product_detail_fail', 400, error, null);
 
         }
     },
-    delete: function (id, callback) {
+    delete: async (id, callback) => {
         try {
-            if (!(Pieces.ValidTypeCheck(id, 'String', 0, 20) && Validator.isDecimal(id))) {
-                return callback(1, 'Invalid_message_id', 400, 'id of message is not a integer', null);
+            let resultProductDetail;
+            if (!(Pieces.ValidTypeCheck(id.groupProductId, 'String', 0, 20) && Validator.isDecimal(id))) {
+                return callback(1, 'Invalid_group_product_id', 400, 'id of group product is not a integer', null);
             }
-            let where = { id: id };
-            ProductDetail.destroy({ where: where }).then(result => {
-                return callback(null, null, 200, null, result);
-            }).catch(function (error) {
-                return callback(1, 'Delete_account_fail', 420, error);
-            });
+            if (!(Pieces.ValidTypeCheck(id.productDetailId, 'String', 0, 20) && Validator.isDecimal(id))) {
+                return callback(1, 'Invalid_product_detail_id', 400, 'id of product detail is not a integer', null);
+            }
+            let where = { id: id.productDetailId ,groupProductId: id.groupProductId };
+            try {
+                resultProductDetail= await ProductDetail.destroy({ where: where })
+                return callback(null, null, 200, null, resultProductDetail);
+
+            } catch (error) {
+                return callback(1, 'Delete_product_detail_fail', 420, error);
+            }
         }
         catch (error) {
-            return callback(1, 'Delete_account_fail', 400, error);
+            return callback(1, 'Delete_product_detail_fail', 400, error);
 
         }
     }

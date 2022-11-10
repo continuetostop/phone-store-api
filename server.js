@@ -4,6 +4,7 @@ const MethodOverride = require('method-override');
 const bodyParser = require('body-parser');
 const MySequenlize = require('./app/utils/Sequelize');
 const Role = require('./app/models/Role.model');
+const StatusOrder = require('./app/models/StatusOrder.model');
 const db = require('./app/models/index')
 const cookieSession = require("cookie-session");
 
@@ -48,13 +49,19 @@ app.all('/*', [require('./app/middlewares/AllowCossDomain')]);
 app.use(Express.static(__dirname + '/public'));
 MySequenlize.sync()
 //MySequenlize.sync({alert:true});
-//MySequenlize.sync({force:true}).then(()=>{
+// MySequenlize.sync({force:true}).then(()=>{
 //   Role.bulkCreate([
 //       { name: "admin" },
 //       { name: "moderator" },
 //       { name: "user" },
-//   ]).then(() => console.log("Users data have been saved"));
-//})
+//   ]).then(()=>{
+//     StatusOrder.bulkCreate([
+//         { orderStatusName: "spendding" },
+//         { orderStatusName: "confirm" },
+//     ])
+//   })
+//   .then(() => console.log("Users data have been saved"));
+// })
 
 require('./app/routes')(app);
 app.listen(3000, () => {

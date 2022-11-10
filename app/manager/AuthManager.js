@@ -13,7 +13,7 @@ const User = require('../models/User.model');
 const Role = require('../models/Role.model');
 
 module.exports = {
-     create: (data, callback) =>  {
+    create: async (data, callback) => {
         try {
             if (!Pieces.ValidTypeCheck(data.username, 'String')) {
                 return callback(1, 'invalid_username', 400, 'the username is not a string', null);
@@ -29,32 +29,28 @@ module.exports = {
             userData.email = data.email;
             userData.password = bcrypt.hashSync(data.password, 8);
             let user;
-            User.create(userData).then(result => {
-                user = result;
-                if (data.roles) {
-                    Role.findAll({
-                        where: {
-                            name: {
-                                [Op.or]: data.roles,
-                            },
-                        },
-                    }).then((roles) => {
-                        return user.setRoles(roles);
-                    }).then((result) => {
-                        return callback(null, null, 200, null, result);
-                    });
-                } else {
-                    // user has role = 1
-                     user.setRoles([1]).then((result)=>{
-                         if (result){
-                             return callback(null, null, 200, null, result);
-                         }            
-                     });
-                }
-            }).catch(function (error) {
-                return callback(1, 'create_account_fail', 420, error, null);
-            });
+            let resultUser = await User.create(userData);
+            let resultRoles
+            let result
 
+            if (data.roles) {
+                resultRoles = await Role.findAll({
+                    where: {
+                        name: {
+                            [Op.or]: data.roles,
+                        },
+                    },
+                })
+
+                result = await resultUser.setRoles(resultRoles);
+                return callback(null, null, 200, null, result);
+            } else {
+                // user has role = 1
+                result = await resultUser.setRoles([1])
+                if (result) {
+                    return callback(null, null, 200, null, result);
+                }
+            }
 
         } catch (error) {
             return callback(1, 'create_account_fail', 400, error, null);
@@ -70,8 +66,8 @@ module.exports = {
                 return callback(1, 'invalid_password', 400, 'the password is not a string', null);
             }
             let user;
-            let where={}
-            where.username=data.username;
+            let where = {}
+            where.username = data.username;
             User.findOne({
                 where: where,
             }).then(result => {
@@ -92,7 +88,7 @@ module.exports = {
                     }
                 }
             }).then((listRule) => {
-                let authorities=[];
+                let authorities = [];
                 const token = jwt.sign({ id: user.id }, process.env.SECRET, {
                     expiresIn: 86400, // 24 hours
                 });
