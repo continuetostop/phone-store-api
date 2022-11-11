@@ -1,7 +1,0 @@
-node_modules/
-migration/
-ref.txt
-tmp
-test/
-ss.env
-package-lock.json
