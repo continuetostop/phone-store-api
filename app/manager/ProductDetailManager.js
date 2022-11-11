@@ -19,8 +19,12 @@ module.exports = {
             if (!Pieces.ValidTypeCheck(data.price, 'String', 0, 20) || !Validator.isDecimal(data.price)) {
                 return callback(1, 'invalid_group_product_detail_price', 400, 'group product price is not a interger', null);
             }
+            if (!Pieces.ValidTypeCheck(data.image, 'String')) {
+                return callback(1, 'invalid_group_product_detail_image', 400, 'group product image is not a string', null);
+            }
             let productDetalData = {};
             productDetalData.price = data.price;
+            productDetalData.image = data.image;
             let resultGroupProduct;
             let resultProductDetail;
             let result;

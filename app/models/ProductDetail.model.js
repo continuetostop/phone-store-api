@@ -7,7 +7,7 @@ let ProductDetail = MySequenlize.define('product_detail', {
         allowNull: false
     },
     image: {
-        type: Sequelize.DATE,
+        type: Sequelize.STRING(255),
         allowNull: true
     }
 

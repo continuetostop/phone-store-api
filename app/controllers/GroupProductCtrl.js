@@ -23,13 +23,25 @@ module.exports = {
     getOne: (req, res) => {
         let id = req.params.id;
 
-        GroupProductManager.getOne(id, (errorCode, errorMessage, httpCode, errorDescription, result) => {
+        GroupProductManager.getByCategory(id, (errorCode, errorMessage, httpCode, errorDescription, result) => {
             if (errorCode) {
                 return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
             }
             return Rest.sendSuccessOne(res, result, httpCode);
         })
     },
+    getByCategory: (req, res) => {
+        let id = req.params.categoryId;
+        let query = req.query || '';
+
+        GroupProductManager.getByCategory(id,query, (errorCode, errorMessage, httpCode, errorDescription, result) => {
+            if (errorCode) {
+                return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
+            }
+            return Rest.sendSuccessOne(res, result, httpCode);
+        })
+    },
+
     getAll: (req, res) => {
         //let query = req.params || '';
         let query = req.query || '';

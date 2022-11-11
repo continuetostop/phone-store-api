@@ -7,6 +7,7 @@ const Role = require('./app/models/Role.model');
 const StatusOrder = require('./app/models/StatusOrder.model');
 const db = require('./app/models/index')
 const cookieSession = require("cookie-session");
+const fileupload = require('express-fileupload');
 
 // const Ngrok = require('ngrok');
 
@@ -23,7 +24,9 @@ let app = Express();
 app.use(BodyParser.json({
     limit: '5mb'
 }))
-
+app.use(fileupload({
+    useTempFiles: true
+}));
 app.use(bodyParser.json({
     type: 'application/vnd.api+json'
 }))
@@ -48,7 +51,7 @@ app.all('/*', [require('./app/middlewares/AllowCossDomain')]);
 
 app.use(Express.static(__dirname + '/public'));
 MySequenlize.sync()
-//MySequenlize.sync({alert:true});
+// MySequenlize.sync({alert:true});
 // MySequenlize.sync({force:true}).then(()=>{
 //   Role.bulkCreate([
 //       { name: "admin" },

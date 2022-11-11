@@ -19,16 +19,17 @@ module.exports = {
             }
             let categoryData = {};
             let resultCategory;
+
             categoryData.name = data.name;
             categoryData.description = data.description;
-            try {
-                resultCategory = await Category.create(categoryData)
+
+             try {
+                resultCategory = await Category.create(categoryData);
                 return callback(null, null, 200, null, resultCategory);
             } catch (error) {
                 return callback(1, 'create_category_fail', 420, error, null);
             };
-
-
+            
         } catch (error) {
             return callback(1, 'create_category_fail', 400, error, null);
         }
@@ -77,6 +78,7 @@ module.exports = {
         try {
             let update = {};
             let where = {};
+            let resCategory;
             let resultCategory;
             if (!(Pieces.ValidTypeCheck(id, 'String', 0, 20) && Validator.isDecimal(id))) {
                 return callback(1, 'Invalid_category_id', 400, 'Id of category is not a integer', null);
@@ -113,6 +115,7 @@ module.exports = {
                 return callback(1, 'Invalid_category_id', 400, 'id of category is not a integer', null);
             }
             let resultCategory;
+            let resCategory;
             let where = { id: id };
             try {
                 resultCategory = await Category.destroy({ where: where })

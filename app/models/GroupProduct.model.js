@@ -6,14 +6,10 @@ let GroupProduct = MySequenlize.define('group_product', {
         type: Sequelize.STRING(255),
         allowNull: false
     }, 
-    price: {
-        type: Sequelize.BIGINT(20),
-        allowNull: false
-    }, 
-    image: {
-        type: Sequelize.DATE,
-        allowNull: true
-    },
+    // price: {
+    //     type: Sequelize.BIGINT(20),
+    //     allowNull: false
+    // }, 
     description: {
         type: Sequelize.STRING(255),
         allowNull: false

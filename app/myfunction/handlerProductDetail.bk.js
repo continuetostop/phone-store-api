@@ -15,8 +15,10 @@ const handerProductDetail = (data) => {
         data.options = []
         //console.log(i)
         i.options.map((j) => {
-            let dataOptions = {};
-            dataOptions[j.name] = j.product_detail_option.value + " " + j.unit;
+            let dataOptions={};
+            dataOptions.key = j.name;
+            dataOptions.unit = j.unit;
+            dataOptions.value = j.product_detail_option.value;
             data.options.push(dataOptions)
         })
         groupProductData.product_details.push(data)
@@ -24,4 +26,4 @@ const handerProductDetail = (data) => {
     return groupProductData;
 }
 
-module.exports = handerProductDetail;
+module.exports=handerProductDetail;
