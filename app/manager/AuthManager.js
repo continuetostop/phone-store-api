@@ -2,7 +2,7 @@ const Validator = require('validator');
 const Sequenlize = require('sequelize');
 require('dotenv').config();
 const Op = require('sequelize').Op;
-
+const auth=require('../config/auth')
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
@@ -89,7 +89,7 @@ module.exports = {
                 }
             }).then((listRule) => {
                 let authorities = [];
-                const token = jwt.sign({ id: user.id }, process.env.SECRET, {
+                const token = jwt.sign({ id: user.id }, auth.SECRET, {
                     expiresIn: 86400, // 24 hours
                 });
 
