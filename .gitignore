@@ -1,0 +1,7 @@
+node_modules/
+migration/
+ref.txt
+tmp
+test/
+.env
+package-lock.json
