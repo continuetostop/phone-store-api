@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
-const config = require("../config/auth.config.js");
+const config = require("../config/auth");
 const db = require("../models");
-const User = db.user;
+const User = require('../models/User.model');
 
 verifyToken = (req, res, next) => {
   let token = req.session.token;
@@ -12,7 +12,7 @@ verifyToken = (req, res, next) => {
     });
   }
 
-  jwt.verify(token, config.secret, (err, decoded) => {
+  jwt.verify(token, config.SECRET, (err, decoded) => {
     if (err) {
       return res.status(401).send({
         message: "Unauthorized!",
@@ -23,11 +23,10 @@ verifyToken = (req, res, next) => {
   });
 };
 
-isAdmin = async (req, res, next) => {
+isAdmin = async  (req, res, next) => {
   try {
-    const user = await User.findByPk(req.userId);
+    const user = await  User.findByPk(req.userId);
     const roles = await user.getRoles();
-
     for (let i = 0; i < roles.length; i++) {
       if (roles[i].name === "admin") {
         return next();

@@ -23,7 +23,7 @@ module.exports = {
     getOne: (req, res) => {
         let id = req.params.id;
 
-        GroupProductManager.getByCategory(id, (errorCode, errorMessage, httpCode, errorDescription, result) => {
+        GroupProductManager.getOne(id, (errorCode, errorMessage, httpCode, errorDescription, result) => {
             if (errorCode) {
                 return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
             }

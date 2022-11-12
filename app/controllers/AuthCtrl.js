@@ -21,19 +21,23 @@ module.exports = {
                 return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
             }
             req.session.token = result;
-            resData=result;
+            resData = result;
             return Rest.sendSuccessOne(res, resData, httpCode);
         })
     },
     signout: (req, res) => {
-        let data = req.body || '';
-        AuthManager.signout( data, (errorCode, errorMessage, httpCode, errorDescription, result) => {
-            if (errorCode) {
-                return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
-            }
-            let resData = {};
-            resData.result = result;
-            return Rest.sendSuccessOne(res, result, httpCode);
-        })
+        try {
+            req.session = null;
+            return Rest.sendSuccessOne(res, 'You\'ve been signed out!', 403 )
+    } catch (error) {
+            return Rest.sendError(res,1, 'logout_unsuccessful', 400, error, null);
+        }
+        // if (errorCode) {
+        //     return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
+        // }
+        // let resData = {};
+        // resData.result = result;
+        // return Rest.sendSuccessOne(res, result, httpCode);
+
     },
 }

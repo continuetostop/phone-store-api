@@ -40,12 +40,12 @@ module.exports = {
                     let dataOption = await JSON.parse(option);
                     optionId = dataOption.id;
                     valueOption = dataOption.value;
-                    result = resultProductDetail.addOptions([optionId], { through: { value: valueOption } })
+                    result = await resultProductDetail.addOptions([optionId], { through: { value: valueOption } })
                 } catch (err) {
                     console.log(err);
                 }
             })
-            return callback(null, null, 200, null, '');
+            return callback(null, null, 200, null, resultProductDetail);
         } catch (error) {
             return callback(1, 'create_product_detail_fail', 420, error, null);
         }

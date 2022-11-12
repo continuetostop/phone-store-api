@@ -43,12 +43,12 @@ module.exports = {
                 })
 
                 result = await resultUser.setRoles(resultRoles);
-                return callback(null, null, 200, null, result);
+                return callback(null, null, 200, null, resultUser);
             } else {
                 // user has role = 1
                 result = await resultUser.setRoles([1])
                 if (result) {
-                    return callback(null, null, 200, null, result);
+                    return callback(null, null, 200, null, resultUser);
                 }
             }
 
@@ -108,13 +108,13 @@ module.exports = {
             return callback(1, 'login_unsuccessful', 400, error, null);
         }
     },
-    signout: (req, callback) => {
-        try {
-            req.session = null;
-            return callback(1, 'You\'ve been signed out!', 403, error, null);
+    // signout: (req, callback) => {
+    //     try {
+    //         req.session = null;
+    //         return callback(1, 'You\'ve been signed out!', 403, error, null);
 
-        } catch (error) {
-            return callback(1, 'logout_unsuccessful', 400, error, null);
-        }
-    }
+    //     } catch (error) {
+    //         return callback(1, 'logout_unsuccessful', 400, error, null);
+    //     }
+    // }
 }

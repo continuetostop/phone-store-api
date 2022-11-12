@@ -6,6 +6,7 @@ module.exports = {
         let data = req.body || '';
         let groupProductId = req.params.groupproductid;
         let options = null;
+        let resultProductDetail
         if (!(data === '' || Object.keys(data).length === 0)) {
             options = data.option;
             delete data.option;
@@ -15,7 +16,7 @@ module.exports = {
                 return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
             }
             let resData = {};
-
+            console.log(result);
             resData.id = result.id;
             return Rest.sendSuccessOne(res, resData, httpCode);
         })
