@@ -16,7 +16,7 @@ module.exports = {
                 return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
             }
             let resData = {};
-            console.log(result);
+            //console.log(result);
             resData.id = result.id;
             return Rest.sendSuccessOne(res, resData, httpCode);
         })

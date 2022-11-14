@@ -2,12 +2,14 @@ const Express = require('express');
 const BodyParser = require('body-parser');
 const MethodOverride = require('method-override');
 const bodyParser = require('body-parser');
+const cookieSession = require("cookie-session");
+const fileupload = require('express-fileupload');
+
+
 const MySequenlize = require('./app/utils/Sequelize');
 const Role = require('./app/models/Role.model');
 const StatusOrder = require('./app/models/StatusOrder.model');
 const db = require('./app/models/index')
-const cookieSession = require("cookie-session");
-const fileupload = require('express-fileupload');
 
 // const Ngrok = require('ngrok');
 
@@ -67,6 +69,6 @@ MySequenlize.sync()
 // })
 
 require('./app/routes')(app);
-app.listen(5000, () => {
-    console.log('Server app running on port 5000!');
+app.listen(3000, () => {
+    console.log('Server app running on port 3000!');
 })
