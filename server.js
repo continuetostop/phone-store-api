@@ -67,6 +67,6 @@ MySequenlize.sync()
 // })
 
 require('./app/routes')(app);
-app.listen(8080, () => {
-    console.log('Server app running on port 8080!');
+app.listen(5000, () => {
+    console.log('Server app running on port 5000!');
 })
