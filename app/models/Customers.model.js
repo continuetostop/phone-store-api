@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const MySequenlize = require('../utils/Sequelize');
 
-let Customer = MySequenlize.define('customers', {
+let Customer = MySequenlize.define('customer', {
     id: {
         type: Sequelize.BIGINT(20),
         autoIncrement: true,
