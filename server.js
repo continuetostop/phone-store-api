@@ -52,21 +52,21 @@ app.use(
 app.all('/*', [require('./app/middlewares/AllowCossDomain')]);
 
 app.use(Express.static(__dirname + '/public'));
-MySequenlize.sync()
+// MySequenlize.sync()
 // MySequenlize.sync({alert:true});
-// MySequenlize.sync({force:true}).then(()=>{
-//   Role.bulkCreate([
-//       { name: "admin" },
-//       { name: "moderator" },
-//       { name: "user" },
-//   ]).then(()=>{
-//     StatusOrder.bulkCreate([
-//         { orderStatusName: "spendding" },
-//         { orderStatusName: "confirm" },
-//     ])
-//   })
-//   .then(() => console.log("Users data have been saved"));
-// })
+MySequenlize.sync({force:true}).then(()=>{
+  Role.bulkCreate([
+      { name: "admin" },
+      { name: "moderator" },
+      { name: "user" },
+  ]).then(()=>{
+    StatusOrder.bulkCreate([
+        { orderStatusName: "spendding" },
+        { orderStatusName: "confirm" },
+    ])
+  })
+  .then(() => console.log("Users data have been saved"));
+})
 
 require('./app/routes')(app);
 app.listen(5000, () => {
