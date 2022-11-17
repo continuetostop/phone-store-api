@@ -4,8 +4,8 @@
   "description": "",
   "apidoc": {
     "title": "api document apple store",
-    "url" : "",
-    "sampleUrl":"http://localhost:3000/"
+    "url": "",
+    "sampleUrl": "http://localhost:3000/"
   },
   "main": "server.js",
   "scripts": {
