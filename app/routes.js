@@ -5,5 +5,6 @@ module.exports =function(app){
     require('./route/groupProduct')(app);
     require('./route/productDetail')(app);
     require('./route/order')(app);
+    require('./route/option')(app);
 
 }

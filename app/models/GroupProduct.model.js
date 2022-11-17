@@ -17,6 +17,10 @@ let GroupProduct = MySequenlize.define('group_product', {
     specific:{
         type: Sequelize.STRING(255),
         allowNull: false
+    },
+    services:{
+        type: Sequelize.TEXT,
+        allowNull: true
     }
     // isdefault:{
     //     type: Sequelize.BOOLEAN,

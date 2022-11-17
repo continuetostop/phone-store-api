@@ -34,6 +34,9 @@ module.exports = {
             if (!Pieces.ValidTypeCheck(data.specific, 'String')) {
                 return callback(1, 'invalid_group_product_specific', 400, 'group product specific is not a string', null);
             }
+            if (!Pieces.ValidTypeCheck(data.services, 'String')) {
+                return callback(1, 'invalid_group_product_services', 400, 'group product services is not a string', null);
+            }
 
             let groupProductData = {};
             let productDataDetail = {};
@@ -42,6 +45,7 @@ module.exports = {
             productDataDetail.image = data.image;
             groupProductData.description = data.description;
             groupProductData.specific = data.specific;
+            groupProductData.services = data.services;
             // groupProductData.option = data.option;
             //console.log(groupProductData);
             let resultGroupProduct

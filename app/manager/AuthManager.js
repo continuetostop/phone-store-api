@@ -90,7 +90,7 @@ module.exports = {
             }).then((listRule) => {
                 let authorities = [];
                 const token = jwt.sign({ id: user.id }, auth.SECRET, {
-                    expiresIn: '30d', // 24 hours
+                    expiresIn: '30d',
                 });
 
                 for (let i = 0; i < listRule.length; i++) {
