@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const MySequenlize = require('../utils/Sequelize');
 
-let Category = MySequenlize.define('category', {
+let Category = MySequenlize.define('categories', {
     name: {
         type: Sequelize.STRING(256),
         allowNull: false

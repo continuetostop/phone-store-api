@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const MySequenlize = require('../utils/Sequelize');
 
-let GroupProduct = MySequenlize.define('group_product', {
+let GroupProduct = MySequenlize.define('group_products', {
     name: {
         type: Sequelize.STRING(255),
         allowNull: false

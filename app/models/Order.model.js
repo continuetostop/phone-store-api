@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const MySequenlize = require('../utils/Sequelize');
 
-let Order = MySequenlize.define('Order', {
+let Order = MySequenlize.define('Orders', {
 
     total: {
         type: Sequelize.BIGINT(64),
