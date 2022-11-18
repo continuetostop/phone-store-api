@@ -73,6 +73,6 @@ app.get('/', function(req, res){
     res.send("Hello World");
 });
 require('./app/routes')(app);
-app.listen(8080, () => {
-    console.log('Server app running on port 8080!');
+app.listen(3000, () => {
+    console.log('Server app running on port 3000!');
 })
