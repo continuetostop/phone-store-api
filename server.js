@@ -74,5 +74,5 @@ app.get('/', function(req, res){
 });
 require('./app/routes')(app);
 app.listen(3000, () => {
-    console.log('Server app running on port 3000!');
+    console.log(`Server app running on port ${this.address().port} !`);
 })
