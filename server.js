@@ -68,10 +68,11 @@ MySequenlize.sync()
 //   .then(() => console.log("Users data have been saved"));
 // })
 
-require('./app/routes')(app);
 app.get('/', function(req, res){
+    console.log('debug');
     res.send("Hello World");
 });
+require('./app/routes')(app);
 app.listen(8080, () => {
     console.log('Server app running on port 8080!');
 })
