@@ -15,7 +15,7 @@ let GroupProduct = MySequenlize.define('group_products', {
         allowNull: false
     }, 
     specific:{
-        type: Sequelize.STRING(255),
+        type: Sequelize.JSON,
         allowNull: false
     },
     services:{
