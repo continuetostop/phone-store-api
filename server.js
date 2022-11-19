@@ -69,7 +69,7 @@ MySequenlize.sync()
 // })
 
 app.get('/', function(req, res){
-    console.log('debug');
+    // console.log('debug');
     res.send("Hello World");
 });
 require('./app/routes')(app);
