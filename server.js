@@ -15,13 +15,14 @@ const Ngrok = require('ngrok');
 
 const port = 8080;
 
-token = '1ouoc8rz6vlbN0ogudeEfHrPDxX_6seu3PQbofh1X2RgT7VaV';
-// Creating Ngrok Tunnel
-(async function () {
-    const url = await Ngrok.connect({ authtoken: token, addr: port });
-    //console.log('Your url: ' + Reset, url);
-    console.log(url);
-})();
+// token = '1ouoc8rz6vlbN0ogudeEfHrPDxX_6seu3PQbofh1X2RgT7VaV';
+// // Creating Ngrok Tunnel
+// (async function () {
+//     const url = await Ngrok.connect({ authtoken: token, addr: port });
+//     //console.log('Your url: ' + Reset, url);
+//     console.log(url);
+// })();
+
 let app = Express();
 
 app.use(BodyParser.json({
