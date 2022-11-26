@@ -9,7 +9,6 @@
   },
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "debug": "nodemon server.js",
     "start": "node server.js",
     "genAPIDoc": "apidoc -i ./app/route/ -o ./public/docs/"
