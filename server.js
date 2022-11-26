@@ -13,7 +13,7 @@ const db = require('./app/models/index')
 
 const Ngrok = require('ngrok');
 
-const port =   process.env.PORT ||3000;
+const port = process.env.PORT || 8080;
 console.log(process.env.PORT);
 // token = '1ouoc8rz6vlbN0ogudeEfHrPDxX_6seu3PQbofh1X2RgT7VaV';
 // // Creating Ngrok Tunnel
@@ -56,26 +56,31 @@ app.all('/*', [require('./app/middlewares/AllowCossDomain')]);
 app.use(Express.static(__dirname + '/public'));
 // MySequenlize.sync()
 // MySequenlize.sync({alert:true});
-MySequenlize.sync({force:true}).then(()=>{
-  Role.bulkCreate([
-      { name: "admin" },
-      { name: "moderator" },
-      { name: "user" },
-  ]).then(()=>{
-    StatusOrder.bulkCreate([
-        { orderStatusName: "spendding" },
-        { orderStatusName: "confirm" },
-    ])
-  })
-  .then(() => console.log("Users data have been saved"));
-})
+try {
 
-app.get('/', function(req, res){
+    MySequenlize.sync({ force: true }).then(() => {
+        Role.bulkCreate([
+            { name: "admin" },
+            { name: "moderator" },
+            { name: "user" },
+        ]).then(() => {
+            StatusOrder.bulkCreate([
+                { orderStatusName: "spendding" },
+                { orderStatusName: "confirm" },
+            ])
+        })
+            .then(() => console.log("Users data have been saved"));
+    })
+} catch (err) {
+    console.log(err)
+}
+
+app.get('/', function (req, res) {
     // console.log('debug');
     res.send("Hello World");
 });
 require('./app/routes')(app);
-const host = '0.0.0.0';
-app.listen(port,host, () => {
+// const host = '0.0.0.0';
+app.listen(port, () => {
     console.log(`Server app running on port ${port}!`);
 })
