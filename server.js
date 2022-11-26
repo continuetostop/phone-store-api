@@ -13,7 +13,7 @@ const db = require('./app/models/index')
 
 const Ngrok = require('ngrok');
 
-const port = 8080;
+const port = 3000;
 
 // token = '1ouoc8rz6vlbN0ogudeEfHrPDxX_6seu3PQbofh1X2RgT7VaV';
 // // Creating Ngrok Tunnel
