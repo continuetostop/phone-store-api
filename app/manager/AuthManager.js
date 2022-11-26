@@ -2,7 +2,7 @@ const Validator = require('validator');
 const Sequenlize = require('sequelize');
 require('dotenv').config();
 const Op = require('sequelize').Op;
-const auth=require('../config/auth')
+const auth = require('../config/auth')
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
@@ -56,7 +56,7 @@ module.exports = {
             return callback(1, 'create_account_fail', 400, error, null);
         }
     },
-    signin: (data, callback) => {
+    signin: async (data, callback) => {
         try {
 
             if (!Pieces.ValidTypeCheck(data.username, 'String')) {
@@ -65,44 +65,48 @@ module.exports = {
             if (!Pieces.ValidTypeCheck(data.password, 'String')) {
                 return callback(1, 'invalid_password', 400, 'the password is not a string', null);
             }
-            let user;
+            let user = {};
+            user.listRules = [];
             let where = {}
             where.username = data.username;
-            User.findOne({
+            let userInfo = await User.findOne({
                 where: where,
-            }).then(result => {
-                user = result;
-                if (!user)
-                    return callback(null, 'user_not_found', 404, null, null);
-                else {
-                    const passwordIsValid = bcrypt.compareSync(
-                        data.password,
-                        user.password
-                    );
-
-                    if (!passwordIsValid) {
-                        return callback(1, 'Invalid Password!', 401, error, null);
-                    }
-                    else {
-                        return user.getRoles()
-                    }
-                }
-            }).then((listRule) => {
-                let authorities = [];
-                const token = jwt.sign({ id: user.id }, auth.SECRET, {
-                    expiresIn: '30d',
-                });
-
-                for (let i = 0; i < listRule.length; i++) {
-                    authorities.push("ROLE_" + listRule[i].name.toUpperCase());
-                }
-                return callback(null, null, 200, null, token);
-
-
             })
-                .catch(function (error) {
-                    return callback(1, 'login_unsuccessful', 403, error, null);
-                });
+            if (!userInfo) {
+                return callback(1, 'user_not_found', 404, null, null);
+            }
+            else {
+                user.id = userInfo.id;
+                user.username = userInfo.username;
+                user.email = userInfo.email;
+                const passwordIsValid = bcrypt.compareSync(
+                    data.password,
+                    userInfo.password
+                );
+
+                if (!passwordIsValid) {
+                    return callback(1, 'Invalid Password!', 401, null, null);
+                }
+                else {
+                    try {
+                        let listRules = await userInfo.getRoles()
+                        let authorities = [];
+                        const token = jwt.sign({ id: user.id }, auth.SECRET, {
+                            expiresIn: '30d',
+                        });
+
+                        for (let i = 0; i < listRules.length; i++) {
+                            authorities.push("ROLE_" + listRules[i].name.toUpperCase());
+                            user.listRules.push("ROLE_" + listRules[i].name.toUpperCase());
+
+                        }
+                        return callback(null, null, 200, null, user);
+                    } catch (error) {
+                        return callback(1, 'login_unsuccessful', 403, error, null);
+                    }
+                }
+            }
+
 
         } catch (error) {
             return callback(1, 'login_unsuccessful', 400, error, null);

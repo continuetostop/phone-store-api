@@ -1,5 +1,5 @@
 const Validator = require('validator');
-const Sequenlize = require('sequelize');
+const {Op} = require('sequelize');
 
 
 const Constant = require('../utils/Constant');
@@ -204,7 +204,7 @@ module.exports = {
             let page = 1;
             let perPage = Constant.DEFAULT_PAGING_SIZE;
             if (Pieces.ValidTypeCheck(query.q, 'String')) {
-                where.name = { [Sequenlize.Op.like]: query.q };
+                where.name = { [Op.substring]: query.q };
             }
 
             if ((Pieces.ValidTypeCheck(query['page'], 'String') && Validator.isDecimal(query['page']))
@@ -222,7 +222,6 @@ module.exports = {
                 if (perPage <= 0)
                     perPage = Constant.DEFAULT_PAGING_SIZE;
             }
-
             let offset = perPage * (page - 1);
             GroupProduct.findAndCountAll({
                 where: where,

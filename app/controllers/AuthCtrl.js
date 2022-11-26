@@ -20,9 +20,13 @@ module.exports = {
             if (errorCode) {
                 return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
             }
-            req.session.token = result;
-            resData = result;
-            return Rest.sendSuccessOne(res, resData, httpCode);
+            try{
+                req.session.token = result;
+                resData = result;
+                return Rest.sendSuccessOne(res, resData, httpCode);
+            }catch(err){
+                console.log(err);
+            }
         })
     },
     signout: (req, res) => {

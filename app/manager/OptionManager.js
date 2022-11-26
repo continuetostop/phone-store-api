@@ -49,25 +49,25 @@ module.exports = {
             try {
                 resultOption = await Option.findAll({
                     where: where,
-                    attributes:['id','name','unit']
+                    attributes: ['id', 'name', 'unit']
                 })
-                return callback(1, 'invail_option', 403, error, null);
+                return callback(1, 'invail_group_product', 403, error, null);
 
             } catch (error) {
             }
             return callback(null, null, 200, null, resultOption);
 
         } catch (error) {
-            return callback(1, 'invail_option', 400, error, null);
+            return callback(1, 'invail_group_product', 400, error, null);
         }
     },
 
-    update: async (groupProductId,id, data, callback) => {
+    update: async (groupProductId, id, data, callback) => {
         try {
             let update = {};
             let where = {};
             let resultOption;
-            if (!(Pieces.ValidTypeCheck(groupProductId,id, 'String', 0, 20) && Validator.isDecimal(id))) {
+            if (!(Pieces.ValidTypeCheck(groupProductId, id, 'String', 0, 20) && Validator.isDecimal(id))) {
                 return callback(1, 'Invalid_option_id', 400, 'Id of option is not a integer', null);
             }
             where.id = id;
@@ -96,13 +96,13 @@ module.exports = {
 
         }
     },
-    delete: async function (groupProductId,id, callback) {
+    delete: async function (groupProductId, id, callback) {
         try {
             if (!(Pieces.ValidTypeCheck(id, 'String', 0, 20) && Validator.isDecimal(id))) {
                 return callback(1, 'Invalid_option_id', 400, 'id of option is not a integer', null);
             }
             let resultOption;
-            let where = { id: id,groupProductId:groupProductId };
+            let where = { id: id, groupProductId: groupProductId };
             try {
                 resultOption = await Option.destroy({ where: where })
                 return callback(null, null, 200, null, resultOption);

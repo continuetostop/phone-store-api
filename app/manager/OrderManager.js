@@ -103,7 +103,7 @@ module.exports = {
         try {
             let resultOrders;
             if (Pieces.ValidTypeCheck(query.q, 'String')) {
-                where.name = { [Sequenlize.Op.like]: query.q };
+                where.name = { [Sequenlize.Op.substring]: query.q };
             }
             let where = {};
             let resOrder={};

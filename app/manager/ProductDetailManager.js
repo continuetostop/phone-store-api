@@ -30,10 +30,21 @@ module.exports = {
             let result;
             let optionId;
             let valueOption;
+            let listOption={};
             resultGroupProduct = await GroupProduct.findByPk(groupProductId)
             resultProductDetail = await ProductDetail.create(productDetalData);
+            let where = { groupProductId: groupProductId };
+            try{
+                listOption = await Option.findAll({
+                    where: where,
+                    attributes: ['id', 'name', 'unit']
+                })
 
-
+            }catch(err){
+                console.log(err)
+            }
+            console.log(listOption)
+            
             resultGroupProduct.addProduct_details([resultProductDetail.id]);
             options.map(async (option) => {
                 try {
@@ -82,7 +93,7 @@ module.exports = {
             let perPage = Constant.DEFAULT_PAGING_SIZE;
             let resultProductDetail;
             if (Pieces.ValidTypeCheck(query.q, 'String')) {
-                where.title = { [Sequenlize.Op.like]: query.q };
+                where.title = { [Sequenlize.Op.substring]: query.q };
             }
 
             if ((Pieces.ValidTypeCheck(query['page'], 'String') && Validator.isDecimal(query['page']))
