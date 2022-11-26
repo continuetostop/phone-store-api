@@ -13,8 +13,8 @@ const db = require('./app/models/index')
 
 const Ngrok = require('ngrok');
 
-const port = 3000;
-
+const port =   process.env.PORT ||3000;
+console.log(process.env.PORT);
 // token = '1ouoc8rz6vlbN0ogudeEfHrPDxX_6seu3PQbofh1X2RgT7VaV';
 // // Creating Ngrok Tunnel
 // (async function () {
