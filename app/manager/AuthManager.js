@@ -100,7 +100,6 @@ module.exports = {
                             user.listRules.push("ROLE_" + listRules[i].name.toUpperCase());
 
                         }
-                        user.token=token;
                         return callback(null, null, 200, null, user);
                     } catch (error) {
                         return callback(1, 'login_unsuccessful', 403, error, null);

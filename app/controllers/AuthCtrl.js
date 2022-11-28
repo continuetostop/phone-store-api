@@ -21,7 +21,7 @@ module.exports = {
                 return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
             }
             try{
-                req.session.token = result.token;
+                req.session.token = result;
                 resData = result;
                 return Rest.sendSuccessOne(res, resData, httpCode);
             }catch(err){
