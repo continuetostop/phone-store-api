@@ -46,8 +46,12 @@ module.exports = {
 
                 listProducts.map(async (product) => {
                     try {
-
-                        let dataProduct = await JSON.parse(product);
+                        if(typeof(product)=='object'){
+                            dataProduct=product
+                        }
+                        else{
+                            dataProduct = await JSON.parse(product);  
+                        }
                         let dataOrderDetail = {}
                         let productDetailId = await dataProduct.productDetailId
                         resultProductDetail = await ProductDetail.findByPk(dataProduct.productDetailId);

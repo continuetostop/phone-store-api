@@ -65,7 +65,7 @@ module.exports = {
                 resultCategory = await Category.findAndCountAll({
                     where: where,
                 })
-                return callback(null, null, 200, null, resultCategory);
+                return callback(null, null, 200, null, resultCategory.rows);
 
             } catch (error) {
                 return callback(1, 'Find_and_get_all_category_fail', 420, error, null);

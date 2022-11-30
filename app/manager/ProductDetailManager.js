@@ -7,6 +7,7 @@ const Pieces = require('../utils/Pieces');
 
 const ProductDetail = require('../models/ProductDetail.model');
 const GroupProduct = require('../models/GroupProduct.model');
+const Option = require('../models/Option.model');
 
 module.exports = {
     create: async (groupProductId, data, options, callback) => {
@@ -34,21 +35,28 @@ module.exports = {
             resultGroupProduct = await GroupProduct.findByPk(groupProductId)
             resultProductDetail = await ProductDetail.create(productDetalData);
             let where = { groupProductId: groupProductId };
-            try{
-                listOption = await Option.findAll({
-                    where: where,
-                    attributes: ['id', 'name', 'unit']
-                })
+            // try{
+            //     listOption = await Option.findAll({
+            //         where: where,
+            //         attributes: ['id', 'name', 'unit']
+            //     })
 
-            }catch(err){
-                console.log(err)
-            }
-            console.log(listOption)
+            // }catch(err){
+            //     console.log(err)
+            // }
+            // console.log(listOption)
             
             resultGroupProduct.addProduct_details([resultProductDetail.id]);
             options.map(async (option) => {
                 try {
-                    let dataOption = await JSON.parse(option);
+                    let dataOption;
+                    // let dataOption = await JSON.parse(option);
+                    if(typeof(option)=='object'){
+                        dataOption=option
+                    }
+                    else{
+                         dataOption = await JSON.parse(option);  
+                    }
                     optionId = dataOption.id;
                     valueOption = dataOption.value;
                     result = await resultProductDetail.addOptions([optionId], { through: { value: valueOption } })

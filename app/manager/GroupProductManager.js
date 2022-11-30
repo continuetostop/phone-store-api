@@ -31,9 +31,9 @@ module.exports = {
             if (!Pieces.ValidTypeCheck(data.description, 'String')) {
                 return callback(1, 'invalid_group_product_description', 400, 'group product description is not a string', null);
             }
-            if (!Pieces.ValidTypeCheck(data.specific, 'String')) {
-                return callback(1, 'invalid_group_product_specific', 400, 'group product specific is not a string', null);
-            }
+            // if (!Pieces.ValidTypeCheck(data.specific, 'String')) {
+            //     return callback(1, 'invalid_group_product_specific', 400, 'group product specific is not a string', null);
+            // }
             if (!Pieces.ValidTypeCheck(data.services, 'String')) {
                 return callback(1, 'invalid_group_product_services', 400, 'group product services is not a string', null);
             }
@@ -71,9 +71,15 @@ module.exports = {
             Promise.all(
                 options.map(async (option) => {
                     try {
+                        let dataOptionClone,dataOption;
+                        if(typeof(option)=='object'){
+                            dataOption=option
+                        }
+                        else{
+                             dataOption = await JSON.parse(option);  
+                        }
+                        dataOptionClone = await { ...dataOption }
 
-                        let dataOption = await JSON.parse(option);
-                        let dataOptionClone = await { ...dataOption }
                         delete dataOption.value
                         resultOption = await Option.create(dataOption);
                         result = resultGroupProduct.addOptions([resultOption.id])
