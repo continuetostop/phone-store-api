@@ -5,6 +5,7 @@ module.exports = {
     create: (req, res) => {
         let data = req.body || '';
         let groupProductId = req.params.groupproductid;
+        // console.log(data);
         let options = null;
         let resultProductDetail
         if (!(data === '' || Object.keys(data).length === 0)) {
