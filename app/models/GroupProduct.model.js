@@ -11,7 +11,7 @@ let GroupProduct = MySequenlize.define('group_products', {
     //     allowNull: false
     // }, 
     description: {
-        type: Sequelize.STRING(255),
+        type: Sequelize.TEXT,
         allowNull: false
     }, 
     specific:{

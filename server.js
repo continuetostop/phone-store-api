@@ -14,7 +14,8 @@ const db = require('./app/models/index')
 const Ngrok = require('ngrok');
 
 const port = process.env.PORT || 8080;
-console.log(process.env.PORT);
+
+// console.log(process.env.PORT);
 // token = '1ouoc8rz6vlbN0ogudeEfHrPDxX_6seu3PQbofh1X2RgT7VaV';
 // // Creating Ngrok Tunnel
 // (async function () {
@@ -57,7 +58,7 @@ app.all('/*', [require('./app/middlewares/AllowCossDomain')]);
 app.use(Express.static(__dirname + '/public'));
 try {
     
-    MySequenlize.sync()
+    // MySequenlize.sync()
     // MySequenlize.sync({alert:true});
     // MySequenlize.sync({ force: true }).then(() => {
     //     Role.bulkCreate([
@@ -66,8 +67,11 @@ try {
     //         { name: "user" },
     //     ]).then(() => {
     //         StatusOrder.bulkCreate([
-    //             { orderStatusName: "spendding" },
-    //             { orderStatusName: "confirm" },
+    //             { id:0,orderStatusName: "cancel" },
+    //             { id:1,orderStatusName: "spendding" },
+    //             { id:2,orderStatusName: "confirm" },
+    //             { id:3,orderStatusName: "send" },
+    //             { id:4,orderStatusName: "complete" },
     //         ])
     //     })
     //         .then(() => console.log("Users data have been saved"));

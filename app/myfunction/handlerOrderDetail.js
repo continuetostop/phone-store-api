@@ -1,4 +1,8 @@
-const handerProductDetail = (data) => {
+const StatusOrder = require('../models/StatusOrder.model');
+const ProductDetail = require('../models/ProductDetail.model');
+
+const handerOrderDetail = (data) => {
+    
 
     let orderDetailData = {}
     orderDetailData.id = data.id;
@@ -6,6 +10,9 @@ const handerProductDetail = (data) => {
     orderDetailData.customerName = data.customer.name;
     orderDetailData.customerNumberPhone = data.customer.numberPhone;
     orderDetailData.customerAdress = data.customer.address;
+    orderDetailData.statusOrdersCurrent = data.status_orders[0].orderStatusName==='cancel'? 'cancel': data.status_orders[data.status_orders.length-1].orderStatusName;
+    orderDetailData.idStatusOrdersNext = data.status_orders[0].orderStatusName==='cancel'? 0:data.status_orders[data.status_orders.length-1].id+1;
+    orderDetailData.statusOrdersNext ='';
     orderDetailData.createdAt = data.createdAt;
     orderDetailData.updatedAt = data.updatedAt;
     orderDetailData.total = data.total;
@@ -15,9 +22,10 @@ const handerProductDetail = (data) => {
         let data = {}
         data.id = i.id;
         data.ProductName = i.group_product.name;
-        data.price = i.price;
+        data.price = i.order_detail.price;
+        data.qty = i.order_detail.qty;
+        data.subtotal = i.order_detail.subtotal;
         data.image = i.image;
-        data.description = i.description;
         data.options = []
         //console.log(i)
 
@@ -32,4 +40,4 @@ const handerProductDetail = (data) => {
     return orderDetailData;
 }
 
-module.exports = handerProductDetail;
+module.exports = handerOrderDetail;

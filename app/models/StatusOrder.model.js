@@ -4,7 +4,7 @@ const MySequenlize = require('../utils/Sequelize');
 let StatusOrder = MySequenlize.define('status_orders', {
     id: {
         type: Sequelize.BIGINT(20),
-        autoIncrement: true,
+        // autoIncrement: true,
         allowNull: false,
         //allowNull: true,
         primaryKey: true

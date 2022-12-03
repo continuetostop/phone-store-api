@@ -35,10 +35,10 @@ module.exports = {
             return Rest.sendSuccessMany(res, result, httpCode);
         })
     },
-    update: (req, res) => {
-        let id = req.params.id;
-        let data = req.body || '';
-        OrderManager.update(id, data, (errorCode, errorMessage, httpCode, errorDescription, result) => {
+    changeStatus: (req, res) => {
+        let idOrder = req.params.idOrder;
+        let idStatus = req.params.idStatus;
+        OrderManager.changeStatus(idOrder, idStatus, (errorCode, errorMessage, httpCode, errorDescription, result) => {
             if (errorCode) {
                 return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
             }

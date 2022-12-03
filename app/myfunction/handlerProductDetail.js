@@ -4,6 +4,9 @@ const handerProductDetail = (data) => {
     groupProductData.name = data.name;
     groupProductData.price = data.price;
     groupProductData.image = data.image;
+    groupProductData.description = data.description;
+    groupProductData.specific = data.specific;
+    groupProductData.services = data.services;
     groupProductData.product_details = []
     groupProductData.options = []
 

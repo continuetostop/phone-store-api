@@ -14,6 +14,10 @@ let OrderDetail = MySequenlize.define('order_detail', {
         type: Sequelize.BIGINT(255),
         allowNull: false
     }, 
+    subtotal: {
+        type: Sequelize.BIGINT(255),
+        allowNull: false
+    }, 
    
 },{
     freezeTableName: true

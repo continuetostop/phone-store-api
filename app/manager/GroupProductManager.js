@@ -117,6 +117,9 @@ module.exports = {
                 groupProductData.name = result.name;
                 groupProductData.price = result.price;
                 groupProductData.image = result.image;
+                groupProductData.description = result.description;
+                groupProductData.specific = result.specific;
+                groupProductData.services = result.services;
                 //console.log(JSON.stringify(result));
                 //return result;
                 return handerProductDetail(result)
@@ -244,6 +247,9 @@ module.exports = {
                             i.price = i.product_details[0].price
                             groupProduct.id = i.id;
                             groupProduct.name = i.name;
+                            groupProduct.description = i.description;
+                            groupProduct.specific = i.specific;
+                            groupProduct.services = i.services;
                             groupProduct.price = i.product_details[0].price
                             groupProduct.image = i.product_details[0].image
                             delete i.product_details;
