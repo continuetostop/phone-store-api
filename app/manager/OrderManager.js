@@ -119,7 +119,7 @@ module.exports = {
                 if (resultOrder) {
                     resultOrder.addStatus_orders([idStatus])
                     resultStatusOrder =await StatusOrder.findByPk(idStatus);
-                    console.log(JSON.stringify(resultStatusOrder))
+                    // console.log(JSON.stringify(resultStatusOrder))
                     resultOrder.StatusCurrent = resultStatusOrder.orderStatusName;
                     resultOrder.save();
                     return callback(null, null, 200, null, idOrder);
@@ -162,7 +162,7 @@ module.exports = {
                 resOrder = handlerOrderDetail(resultOrder)
                 
                 let next = await StatusOrder.findByPk(resOrder.idStatusOrdersNext)
-                if(next&&resOrder.idStatusOrdersNext!==0){
+                if(next&&resOrder.idStatusOrdersNext!==1    ){
                     resOrder.idStatusOrdersNext= next.id;
                     resOrder.statusOrdersNext= next.orderStatusName;
                 }
@@ -186,9 +186,9 @@ module.exports = {
             let whereCus={}
             let whereOrder={}
             let resOrder = {};
-            
+
             if (Pieces.ValidTypeCheck(query.numberphone, 'String')) {
-                whereCus.numberPhone = { [Sequenlize.Op.substring]: query.numberphone };
+                whereCus.numberPhone = { [Sequenlize.Op.startsWith]: query.numberphone };
             }
             if (Pieces.ValidTypeCheck(query.status, 'String')) {
                 whereOrder.StatusCurrent = { [Sequenlize.Op.substring]: query.status };
