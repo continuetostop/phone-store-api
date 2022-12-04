@@ -26,6 +26,9 @@ module.exports = {
             if (!Pieces.ValidTypeCheck(data.address, 'String')) {
                 return callback(1, 'invalid_adress', 400, 'address is not a string', null);
             }
+            if (!Pieces.ValidTypeCheck(data.note, 'String')) {
+                return callback(1, 'invalid_note', 400, 'note is not a string', null);
+            }
             let orderData = {};
             let customerData = {};
             let resultOrder;
@@ -37,13 +40,17 @@ module.exports = {
             customerData.name = data.name;
             customerData.numberPhone = data.numberPhone;
             customerData.address = data.address;
+
+            orderData.total = 0;
+            orderData.note = data.note;
+
             resultOrder = await Order.create(orderData)
             resultCustomer = await Customers.create(customerData)
+
             listProducts = data.listProducts;
             resultOrder.setCustomer([resultCustomer.id]);
             // let total = 0;
 
-            var total = 0;
             await Promise.all(
 
                 listProducts.map(async (product) => {
@@ -117,12 +124,12 @@ module.exports = {
             }
             catch (error) {
                 "use strict";
-                return callback(1, 'Update_category_fail', 420, error, null);
+                return callback(1, 'Change_status_order_fail', 420, error, null);
 
             }
         } catch (error) {
             "use strict";
-            return callback(1, 'Update_category_fail', 400, error, null);
+            return callback(1, 'Change_status_order_fail', 400, error, null);
 
         }
     },
@@ -170,9 +177,13 @@ module.exports = {
     getAll: async (query, callback) => {
         try {
             let resultOrders;
-            whereCus={}
+            let whereCus={}
+            let whereOrder={}
             if (Pieces.ValidTypeCheck(query.numberphone, 'String')) {
                 whereCus.numberPhone = { [Sequenlize.Op.substring]: query.numberphone };
+            }
+            if (Pieces.ValidTypeCheck(query.status, 'String')) {
+                whereOrder.orderStatusName = { [Sequenlize.Op.substring]: query.status };
             }
             let where = {};
             let resOrder = {};

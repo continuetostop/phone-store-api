@@ -58,7 +58,7 @@ app.all('/*', [require('./app/middlewares/AllowCossDomain')]);
 app.use(Express.static(__dirname + '/public'));
 try {
     
-    // MySequenlize.sync()
+    MySequenlize.sync()
     // MySequenlize.sync({alert:true});
     // MySequenlize.sync({ force: true }).then(() => {
     //     Role.bulkCreate([

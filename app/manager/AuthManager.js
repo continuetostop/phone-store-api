@@ -24,6 +24,12 @@ module.exports = {
             if (!Pieces.ValidTypeCheck(data.password, 'String')) {
                 return callback(1, 'invalid_password', 400, 'the password is not a string', null);
             }
+            if (!Pieces.ValidTypeCheck(data.securityCode, 'String')) {
+                return callback(1, 'invalid_security_code', 400, 'the security code is not a string', null);
+            }
+            if(data.securityCode!== process.env.SECURITYCODE)
+                return callback(1, 'create_account_fail ', 400, 'the security code  is incorrect', null);
+
             let userData = {};
             userData.username = data.username;
             userData.email = data.email;
