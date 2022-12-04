@@ -26,9 +26,7 @@ module.exports = {
             if (!Pieces.ValidTypeCheck(data.address, 'String')) {
                 return callback(1, 'invalid_adress', 400, 'address is not a string', null);
             }
-            if (!Pieces.ValidTypeCheck(data.note, 'String')) {
-                return callback(1, 'invalid_note', 400, 'note is not a string', null);
-            }
+            
             let orderData = {};
             let customerData = {};
             let resultOrder;
@@ -42,7 +40,10 @@ module.exports = {
             customerData.address = data.address;
 
             orderData.total = 0;
-            orderData.note = data.note;
+            if (Pieces.ValidTypeCheck(data.note, 'String')&&data.note!=='') {
+                orderData.note = data.note;
+            }
+            orderData.StatusCurrent = 'spendding';
 
             resultOrder = await Order.create(orderData)
             resultCustomer = await Customers.create(customerData)
@@ -114,8 +115,13 @@ module.exports = {
             
             try {
                 resultOrder = await Order.findByPk(idOrder)
+                
                 if (resultOrder) {
                     resultOrder.addStatus_orders([idStatus])
+                    resultStatusOrder =await StatusOrder.findByPk(idStatus);
+                    console.log(JSON.stringify(resultStatusOrder))
+                    resultOrder.StatusCurrent = resultStatusOrder.orderStatusName;
+                    resultOrder.save();
                     return callback(null, null, 200, null, idOrder);
                 } else {
                     return callback(1, 'Order_not_exist', 400, null, null);
@@ -179,17 +185,17 @@ module.exports = {
             let resultOrders;
             let whereCus={}
             let whereOrder={}
+            let resOrder = {};
+            
             if (Pieces.ValidTypeCheck(query.numberphone, 'String')) {
                 whereCus.numberPhone = { [Sequenlize.Op.substring]: query.numberphone };
             }
             if (Pieces.ValidTypeCheck(query.status, 'String')) {
-                whereOrder.orderStatusName = { [Sequenlize.Op.substring]: query.status };
+                whereOrder.StatusCurrent = { [Sequenlize.Op.substring]: query.status };
             }
-            let where = {};
-            let resOrder = {};
             try {
                 resultOrders = await Order.findAndCountAll({
-                    where: where,
+                    where: whereOrder,
                     include:[ {
                         model: Customers,
                         attributes: ['name', 'numberPhone', 'address'],

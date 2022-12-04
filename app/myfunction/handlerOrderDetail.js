@@ -10,11 +10,13 @@ const handerOrderDetail = (data) => {
     orderDetailData.customerName = data.customer.name;
     orderDetailData.customerNumberPhone = data.customer.numberPhone;
     orderDetailData.customerAdress = data.customer.address;
-    orderDetailData.statusOrdersCurrent = data.status_orders[0].orderStatusName==='cancel'? 'cancel': data.status_orders[data.status_orders.length-1].orderStatusName;
-    orderDetailData.idStatusOrdersNext = data.status_orders[0].orderStatusName==='cancel'? 0:data.status_orders[data.status_orders.length-1].id+1;
+    orderDetailData.statusOrdersCurrent = data.StatusCurrent
+    // orderDetailData.idStatusOrdersNext = data.status_orders[0].orderStatusName==='cancel'? 0:data.status_orders[data.status_orders.length-1].id+1;
+    orderDetailData.idStatusOrdersNext=data.status_orders.find(item=> item.orderStatusName===data.StatusCurrent).id +1
     orderDetailData.statusOrdersNext ='';
     orderDetailData.createdAt = data.createdAt;
     orderDetailData.updatedAt = data.updatedAt;
+    orderDetailData.updatedAt =data.status_orders.find(item=> item.orderStatusName===data.StatusCurrent).order_status_order.updatedAt;;
     orderDetailData.total = data.total;
     orderDetailData.listProducts = []
 

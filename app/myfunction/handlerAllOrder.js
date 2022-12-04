@@ -10,9 +10,9 @@ const handlerAllOrder = (data) => {
         newOrderDetailData.total=OrderDetailData.total
         newOrderDetailData.numberPhone=OrderDetailData.customer.numberPhone
         newOrderDetailData.address=OrderDetailData.customer.address
-        newOrderDetailData.status_orders=OrderDetailData.status_orders[0].orderStatusName==='cancel'? 'cancel':OrderDetailData.status_orders[OrderDetailData.status_orders.length-1].orderStatusName
-        newOrderDetailData.updatedAt=OrderDetailData.status_orders[OrderDetailData.status_orders.length-1]
-        .order_status_order.updatedAt;
+        newOrderDetailData.status_orders=OrderDetailData.StatusCurrent
+        newOrderDetailData.updatedAt=OrderDetailData.status_orders.find(item=> item.orderStatusName===OrderDetailData.StatusCurrent).order_status_order.updatedAt;
+  
         newOrderDetailData.createdAt=OrderDetailData.createdAt
         allOrderDetailData =[...allOrderDetailData, {...newOrderDetailData}]
     })

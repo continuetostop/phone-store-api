@@ -8,6 +8,11 @@ let Order = MySequenlize.define('Orders', {
         allowNull: false,
         defaultValue:0
     }, 
+    StatusCurrent: {
+        type: Sequelize.STRING(64),
+        allowNull: false,
+        defaultValue:0
+    }, 
     note: {
         type: Sequelize.STRING(255),
         allowNull: false,
