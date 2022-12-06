@@ -20,10 +20,14 @@ user.belongsToMany(role, {
     otherKey: "roleId"
 });
 
-GroupProduct.hasMany(ProductDetail);
+GroupProduct.hasMany(ProductDetail,{
+    onDelete: 'CASCADE',
+});
 ProductDetail.belongsTo(GroupProduct);
 
-GroupProduct.hasMany(Option);
+GroupProduct.hasMany(Option,{
+    onDelete: 'CASCADE',
+});
 Option.belongsTo(GroupProduct);
 
 Category.hasMany(GroupProduct);

@@ -14,6 +14,10 @@ let OrderDetail = MySequenlize.define('order_detail', {
         type: Sequelize.BIGINT(255),
         allowNull: false
     }, 
+    options: {
+        type: Sequelize.JSON,
+        allowNull: true
+    }, 
     subtotal: {
         type: Sequelize.BIGINT(255),
         allowNull: false

@@ -4,4 +4,3 @@ tmp
 test/
 .env
 package-lock.json
-.env

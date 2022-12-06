@@ -57,7 +57,7 @@ app.all('/*', [require('./app/middlewares/AllowCossDomain')]);
 
 app.use(Express.static(__dirname + '/public'));
 try {
-    
+
     MySequenlize.sync()
     // MySequenlize.sync({alert:true});
     // MySequenlize.sync({ force: true }).then(() => {
@@ -67,11 +67,11 @@ try {
     //         { name: "user" },
     //     ]).then(() => {
     //         StatusOrder.bulkCreate([
-    //             { id:0,orderStatusName: "cancel" },
-    //             { id:1,orderStatusName: "spendding" },
-    //             { id:2,orderStatusName: "confirm" },
-    //             { id:3,orderStatusName: "send" },
-    //             { id:4,orderStatusName: "complete" },
+    //             { id: 0, orderStatusName: "cancel" },
+    //             { id: 1, orderStatusName: "spendding" },
+    //             { id: 2, orderStatusName: "confirm" },
+    //             { id: 3, orderStatusName: "send" },
+    //             { id: 4, orderStatusName: "complete" },
     //         ])
     //     })
     //         .then(() => console.log("Users data have been saved"));
