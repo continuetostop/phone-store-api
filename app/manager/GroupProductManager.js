@@ -158,15 +158,11 @@ module.exports = {
                     perPage = Constant.DEFAULT_PAGING_SIZE;
             }
 
-            let offset = perPage * (page - 1);
             GroupProduct.findAndCountAll({
                 where: where,
                 include: ProductDetail,
-                limit: perPage,
-                offset: offset
             })
                 .then((data) => {
-                    let pages = Math.ceil(data.count / perPage);
                     let groupProducts = [];
                     Promise.all(
                         data.rows.map((i) => {
@@ -180,26 +176,9 @@ module.exports = {
                             groupProducts.push(groupProduct)
                         })
                     )
-                    let output = {
-                        data: groupProducts,
-                        pages: {
-                            current: page,
-                            prev: page - 1,
-                            hasPrev: false,
-                            Next: (page + 1) > pages ? 0 : page + 1,
-                            hasNext: false,
-                            total: pages
-                        },
-                        items: {
-                            begin: ((page * perPage) - perPage) + 1,
-                            end: page * perPage,
-                            total: data.count
-                        }
-                    };
+                   
 
-                    output.pages.hasNext = (output.pages.next !== 0);
-                    output.pages.hasPrev = (output.pages.prev !== 0);
-                    return callback(null, null, 200, null, output);
+                    return callback(null, null, 200, null, groupProducts);
                 }).catch(function (error) {
                     return callback(1, 'Find_and_get_all_group_product_fail', 420, error, null);
                 });
@@ -231,15 +210,13 @@ module.exports = {
                 if (perPage <= 0)
                     perPage = Constant.DEFAULT_PAGING_SIZE;
             }
-            let offset = perPage * (page - 1);
             GroupProduct.findAndCountAll({
                 where: where,
                 include: ProductDetail,
-                limit: perPage,
-                offset: offset
+
             })
                 .then((data) => {
-                    let pages = Math.ceil(data.count / perPage);
+                    // let pages = Math.ceil(data.count / perPage);
                     let groupProducts = [];
                     Promise.all(
                         data.rows.map((i) => {
@@ -256,26 +233,8 @@ module.exports = {
                             groupProducts.push(groupProduct)
                         })
                     )
-                    let output = {
-                        data: groupProducts,
-                        pages: {
-                            current: page,
-                            prev: page - 1,
-                            hasPrev: false,
-                            Next: (page + 1) > pages ? 0 : page + 1,
-                            hasNext: false,
-                            total: pages
-                        },
-                        items: {
-                            begin: ((page * perPage) - perPage) + 1,
-                            end: page * perPage,
-                            total: data.count
-                        }
-                    };
 
-                    output.pages.hasNext = (output.pages.next !== 0);
-                    output.pages.hasPrev = (output.pages.prev !== 0);
-                    return callback(null, null, 200, null, output);
+                    return callback(null, null, 200, null, groupProducts);
                 }).catch(function (error) {
                     return callback(1, 'Find_and_get_all_group_product_fail', 420, error, null);
                 });
@@ -301,6 +260,9 @@ module.exports = {
             }
             if (Pieces.ValidTypeCheck(data.specific, 'String')) {
                 update.specific = data.specific;
+            }
+            if (Pieces.ValidTypeCheck(data.services, 'String')) {
+                update.services = data.services;
             }
 
             GroupProduct.update(update,

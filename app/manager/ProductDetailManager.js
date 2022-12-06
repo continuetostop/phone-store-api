@@ -31,7 +31,7 @@ module.exports = {
             let result;
             let optionId;
             let valueOption;
-            let listOption={};
+            let listOption = {};
             resultGroupProduct = await GroupProduct.findByPk(groupProductId)
             resultProductDetail = await ProductDetail.create(productDetalData);
             let where = { groupProductId: groupProductId };
@@ -45,17 +45,17 @@ module.exports = {
             //     console.log(err)
             // }
             // console.log(listOption)
-            
+
             resultGroupProduct.addProduct_details([resultProductDetail.id]);
             options.map(async (option) => {
                 try {
                     let dataOption;
                     // let dataOption = await JSON.parse(option);
-                    if(typeof(option)=='object'){
-                        dataOption=option
+                    if (typeof (option) == 'object') {
+                        dataOption = option
                     }
-                    else{
-                         dataOption = await JSON.parse(option);  
+                    else {
+                        dataOption = await JSON.parse(option);
                     }
                     optionId = dataOption.id;
                     valueOption = dataOption.value;
@@ -100,9 +100,9 @@ module.exports = {
             let page = 1;
             let perPage = Constant.DEFAULT_PAGING_SIZE;
             let resultProductDetail;
-            if (Pieces.ValidTypeCheck(query.q, 'String')) {
-                where.title = { [Sequenlize.Op.substring]: query.q };
-            }
+            // if (Pieces.ValidTypeCheck(query.q, 'String')) {
+            //     where.title = { [Sequenlize.Op.substring]: query.q };
+            // }
 
             if ((Pieces.ValidTypeCheck(query['page'], 'String') && Validator.isDecimal(query['page']))
                 || (Pieces.ValidTypeCheck(query['page'], 'Number'))
@@ -120,40 +120,47 @@ module.exports = {
                     perPage = Constant.DEFAULT_PAGING_SIZE;
             }
 
-            let offset = perPage * (page - 1);
-            resultProductDetail = ProductDetail.findAndCountAll({
-                where: where,
-                limit: perPage,
-                offset: offset
-            })
-                .then((data) => {
-                    let pages = Math.ceil(data.count / perPage);
-                    let messages = data.rows;
-                    let output = {
-                        data: messages,
-                        pages: {
-                            current: page,
-                            prev: page - 1,
-                            hasPrev: false,
-                            Next: (page + 1) > pages ? 0 : page + 1,
-                            hasNext: false,
-                            total: pages
-                        },
-                        items: {
-                            begin: ((page * perPage) - perPage) + 1,
-                            end: page * perPage,
-                            total: data.count
-                        }
-                    };
+            // let offset = perPage * (page - 1);
+            // resultProductDetail = ProductDetail.findAndCountAll({
+            //     where: where,
+            //     limit: perPage,
+            //     offset: offset
+            // })
+            //     .then((data) => {
+            //         let pages = Math.ceil(data.count / perPage);
+            //         let messages = data.rows;
+            //         let output = {
+            //             data: messages,
+            //             pages: {
+            //                 current: page,
+            //                 prev: page - 1,
+            //                 hasPrev: false,
+            //                 Next: (page + 1) > pages ? 0 : page + 1,
+            //                 hasNext: false,
+            //                 total: pages
+            //             },
+            //             items: {
+            //                 begin: ((page * perPage) - perPage) + 1,
+            //                 end: page * perPage,
+            //                 total: data.count
+            //             }
+            //         };
 
-                    output.pages.hasNext = (output.pages.next !== 0);
-                    output.pages.hasPrev = (output.pages.prev !== 0);
-                    return callback(null, null, 200, null, output);
-                }).catch(function (error) {
-                    return callback(1, 'Find_and_message_all_user_fail', 420, error, null);
-                });
+            //         output.pages.hasNext = (output.pages.next !== 0);
+            //         output.pages.hasPrev = (output.pages.prev !== 0);
+            //         return callback(null, null, 200, null, output);
+            //     }).catch(function (error) {
+            //         return callback(1, 'Find_and_message_all_user_fail', 420, error, null);
+            //     });
+            try {
+                resultProductDetail = await ProductDetail.findAndCountAll({})
+                return callback(null, null, 200, null, resultProductDetail);
+            } catch (error) {
+                return callback(1, 'Get_all_product_detail', 420, error, null);
+            }
+
         } catch (error) {
-            return callback(1, 'Get_all_message-fail', 400, error, null);
+            return callback(1, 'Get_all_product_detail', 400, error, null);
         }
     },
     update: async (id, data, callback) => {
@@ -205,9 +212,9 @@ module.exports = {
             if (!(Pieces.ValidTypeCheck(id.productDetailId, 'String', 0, 20) && Validator.isDecimal(id))) {
                 return callback(1, 'Invalid_product_detail_id', 400, 'id of product detail is not a integer', null);
             }
-            let where = { id: id.productDetailId ,groupProductId: id.groupProductId };
+            let where = { id: id.productDetailId, groupProductId: id.groupProductId };
             try {
-                resultProductDetail= await ProductDetail.destroy({ where: where })
+                resultProductDetail = await ProductDetail.destroy({ where: where })
                 return callback(null, null, 200, null, resultProductDetail);
 
             } catch (error) {
