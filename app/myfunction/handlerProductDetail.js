@@ -2,7 +2,7 @@ const handerProductDetail = (data) => {
     let groupProductData = {}
     groupProductData.id = data.id;
     groupProductData.name = data.name;
-    groupProductData.price = data.price;
+    groupProductData.price = parseInt(data.price);
     groupProductData.image = data.image;
     groupProductData.description = data.description;
     groupProductData.specific = data.specific;

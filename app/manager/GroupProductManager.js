@@ -1,5 +1,5 @@
 const Validator = require('validator');
-const {Op} = require('sequelize');
+const { Op } = require('sequelize');
 
 
 const Constant = require('../utils/Constant');
@@ -71,12 +71,12 @@ module.exports = {
             Promise.all(
                 options.map(async (option) => {
                     try {
-                        let dataOptionClone,dataOption;
-                        if(typeof(option)=='object'){
-                            dataOption=option
+                        let dataOptionClone, dataOption;
+                        if (typeof (option) == 'object') {
+                            dataOption = option
                         }
-                        else{
-                             dataOption = await JSON.parse(option);  
+                        else {
+                            dataOption = await JSON.parse(option);
                         }
                         dataOptionClone = await { ...dataOption }
 
@@ -115,7 +115,7 @@ module.exports = {
                 let groupProductData = {}
                 groupProductData.id = result.id;
                 groupProductData.name = result.name;
-                groupProductData.price = result.price;
+                groupProductData.price = parseInt(result.price);
                 groupProductData.image = result.image;
                 groupProductData.description = result.description;
                 groupProductData.specific = result.specific;
@@ -134,7 +134,7 @@ module.exports = {
             return callback(1, 'invail_group_product', 400, error, null);
         }
     },
-    getByCategory: (id, query,callback) => {
+    getByCategory: (id, query, callback) => {
         try {
             let where = { categoryId: id };
 
@@ -170,13 +170,13 @@ module.exports = {
                             i.price = i.product_details[0].price
                             groupProduct.id = i.id;
                             groupProduct.name = i.name;
-                            groupProduct.price = i.product_details[0].price
+                            groupProduct.price = parseInt(i.product_details[0].price)
                             groupProduct.image = i.product_details[0].image
                             delete i.product_details;
                             groupProducts.push(groupProduct)
                         })
                     )
-                   
+
 
                     return callback(null, null, 200, null, groupProducts);
                 }).catch(function (error) {
@@ -227,7 +227,7 @@ module.exports = {
                             groupProduct.description = i.description;
                             groupProduct.specific = i.specific;
                             groupProduct.services = i.services;
-                            groupProduct.price = i.product_details[0].price
+                            groupProduct.price = parseInt(i.product_details[0].price)
                             groupProduct.image = i.product_details[0].image
                             delete i.product_details;
                             groupProducts.push(groupProduct)
