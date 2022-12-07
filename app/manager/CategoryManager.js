@@ -78,7 +78,6 @@ module.exports = {
         try {
             let update = {};
             let where = {};
-            let resCategory;
             let resultCategory;
             if (!(Pieces.ValidTypeCheck(id, 'String', 0, 20) && Validator.isDecimal(id))) {
                 return callback(1, 'Invalid_category_id', 400, 'Id of category is not a integer', null);
@@ -89,6 +88,9 @@ module.exports = {
             }
             if (Pieces.ValidTypeCheck(data.description, 'String')) {
                 update.description = data.description;
+            }
+            if (Pieces.ValidTypeCheck(data.image, 'String')) {
+                update.image = data.image;
             }
             try {
                 resultCategory = await Category.update(update, { where: where })
@@ -115,7 +117,6 @@ module.exports = {
                 return callback(1, 'Invalid_category_id', 400, 'id of category is not a integer', null);
             }
             let resultCategory;
-            let resCategory;
             let where = { id: id };
             try {
                 resultCategory = await Category.destroy({ where: where })

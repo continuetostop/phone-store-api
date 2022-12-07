@@ -258,9 +258,9 @@ module.exports = {
             if (Pieces.ValidTypeCheck(data.description, 'String')) {
                 update.description = data.description;
             }
-            if (Pieces.ValidTypeCheck(data.specific, 'String')) {
-                update.specific = data.specific;
-            }
+            // if (Pieces.ValidTypeCheck(data.specific, 'String')) {
+            //     update.specific = data.specific;
+            // }
             if (Pieces.ValidTypeCheck(data.services, 'String')) {
                 update.services = data.services;
             }

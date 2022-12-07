@@ -24,9 +24,7 @@ module.exports = {
     },
 
     getOne: (req, res) => {
-        let id = {};
-        id.id = req.params.id;
-        id.groupproductid = req.params.groupproductid;
+        let id = req.params.id;
 
         ProductDetailManager.getOne(id, (errorCode, errorMessage, httpCode, errorDescription, result) => {
             if (errorCode) {
@@ -35,20 +33,10 @@ module.exports = {
             return Rest.sendSuccessOne(res, result, httpCode);
         })
     },
-    getAll: (req, res) => {
-        //let query = req.params || '';
-        let query = req.query || '';
-        ProductDetailManager.getAll(query, (errorCode, errorMessage, httpCode, errorDescription, result) => {
-            if (errorCode) {
-                return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
-            }
-            return Rest.sendSuccessMany(res, result, httpCode);
-        })
-    },
     update: (req, res) => {
-        let id = req.params.id;
+        let productDetailId = req.params.id;
         let data = req.body || '';
-        ProductDetailManager.update(id, data, (errorCode, errorMessage, httpCode, errorDescription, result) => {
+        ProductDetailManager.update(productDetailId, data, (errorCode, errorMessage, httpCode, errorDescription, result) => {
             if (errorCode) {
                 return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
             }
