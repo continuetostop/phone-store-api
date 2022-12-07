@@ -32,7 +32,7 @@ module.exports = {
     signout: (req, res) => {
         try {
             req.session = null;
-            return Rest.sendSuccessOne(res, 'You\'ve been signed out!', 403 )
+            return Rest.sendSuccessOne(res, 'You\'ve been signed out!', 200 )
     } catch (error) {
             return Rest.sendError(res,1, 'logout_unsuccessful', 400, error, null);
         }
