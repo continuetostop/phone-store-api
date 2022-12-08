@@ -24,13 +24,13 @@ verifyToken = (req, res, next) => {
   });
 };
 
-isAdmin = async  (req, res, next) => {
+isAdmin = async (req, res, next) => {
   try {
-    const user = await  User.findByPk(req.userId);
+    const user = await User.findByPk(req.userId);
     const roles = await user.getRoles();
     for (let i = 0; i < roles.length; i++) {
       if (roles[i].name === "admin") {
-        return next();
+        next();
       }
     }
 
@@ -51,7 +51,7 @@ isModerator = async (req, res, next) => {
 
     for (let i = 0; i < roles.length; i++) {
       if (roles[i].name === "moderator") {
-        return next();
+        next();
       }
     }
 
@@ -72,11 +72,11 @@ isModeratorOrAdmin = async (req, res, next) => {
 
     for (let i = 0; i < roles.length; i++) {
       if (roles[i].name === "moderator") {
-        return next();
+        next();
       }
 
       if (roles[i].name === "admin") {
-        return next();
+        next();
       }
     }
 
