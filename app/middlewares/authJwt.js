@@ -20,7 +20,7 @@ verifyToken = (req, res, next) => {
       });
     }
     req.userId = decoded.id;
-    next();
+    return next();
   });
 };
 
@@ -30,7 +30,7 @@ isAdmin = async (req, res, next) => {
     const roles = await user.getRoles();
     for (let i = 0; i < roles.length; i++) {
       if (roles[i].name === "admin") {
-        next();
+        return next();
       }
     }
 
@@ -51,7 +51,7 @@ isModerator = async (req, res, next) => {
 
     for (let i = 0; i < roles.length; i++) {
       if (roles[i].name === "moderator") {
-        next();
+        return next();
       }
     }
 
@@ -72,11 +72,11 @@ isModeratorOrAdmin = async (req, res, next) => {
 
     for (let i = 0; i < roles.length; i++) {
       if (roles[i].name === "moderator") {
-        next();
+        return next();
       }
 
       if (roles[i].name === "admin") {
-        next();
+        return next();
       }
     }
 
