@@ -49,7 +49,7 @@ app.use(
         secret: "COOKIE_SECRET", // should use as secret environment variable
         // httpOnly: true,
         httpOnly: false,
-        sameSite: 'strict'
+        // sameSite: 'strict'
         //sameSite: 'none'
     })
 );
