@@ -9,11 +9,11 @@ let OrderDetail = MySequenlize.define(
             allowNull: false,
         },
         price: {
-            type: Sequelize.BIGINT,
+            type: Sequelize.BIGINT(255),
             allowNull: false,
         },
         qty: {
-            type: Sequelize.BIGINT,
+            type: Sequelize.BIGINT(255),
             allowNull: false,
         },
         options: {
@@ -21,7 +21,7 @@ let OrderDetail = MySequenlize.define(
             allowNull: true,
         },
         subtotal: {
-            type: Sequelize.BIGINT,
+            type: Sequelize.BIGINT(255),
             allowNull: false,
         },
     },

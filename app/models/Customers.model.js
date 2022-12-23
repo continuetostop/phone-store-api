@@ -3,7 +3,7 @@ const MySequenlize = require("../utils/Sequelize");
 
 let Customer = MySequenlize.define("customers", {
     id: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.BIGINT(20),
         autoIncrement: true,
         allowNull: false,
         //allowNull: true,

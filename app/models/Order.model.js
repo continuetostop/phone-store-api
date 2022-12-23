@@ -3,7 +3,7 @@ const MySequenlize = require("../utils/Sequelize");
 
 let Order = MySequenlize.define("Orders", {
     total: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.BIGINT(64),
         allowNull: false,
         defaultValue: 0,
     },

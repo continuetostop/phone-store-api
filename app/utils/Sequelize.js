@@ -9,10 +9,6 @@ const MySQLSequelize = new Sequelize(
         port: Database[0].port,
         dialect: Database[0].dialect,
         logging: false,
-        ssl: true,
-        keepAlive: true,
-        max: 200,
-        idleTimeoutMillis: 72000000,
     }
 );
 

@@ -1,16 +1,14 @@
-const Sequelize = require('sequelize');
-const MySequenlize = require('../utils/Sequelize');
+const Sequelize = require("sequelize");
+const MySequenlize = require("../utils/Sequelize");
 
-let ProductDetail = MySequenlize.define('product_detail', {
+let ProductDetail = MySequenlize.define("product_detail", {
     price: {
         type: Sequelize.STRING(255),
-        allowNull: false
+        allowNull: false,
     },
     image: {
         type: Sequelize.STRING(255),
-        allowNull: true
-    }
-
+        allowNull: true,
+    },
 });
 module.exports = ProductDetail;
-

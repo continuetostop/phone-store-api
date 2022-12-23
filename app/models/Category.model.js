@@ -1,20 +1,18 @@
-const Sequelize = require('sequelize');
-const MySequenlize = require('../utils/Sequelize');
+const Sequelize = require("sequelize");
+const MySequenlize = require("../utils/Sequelize");
 
-let Category = MySequenlize.define('categories', {
+let Category = MySequenlize.define("categories", {
     name: {
         type: Sequelize.STRING(256),
-        allowNull: false
-    }, 
+        allowNull: false,
+    },
     description: {
         type: Sequelize.STRING(256),
-        allowNull: false
-    }, 
+        allowNull: false,
+    },
     image: {
         type: Sequelize.STRING(256),
-        allowNull: true
+        allowNull: true,
     },
-
 });
-module.exports=Category;
-
+module.exports = Category;
