@@ -1,14 +1,14 @@
-require('dotenv').config()
+require("dotenv").config();
 let DBConnectorSetting = [
     {
-        host: process.env.DBHOST||"remotemysql.com",
-        port:"3306",
-        username:process.env.DBUSERNAME||'1baCA5TYVo',
-        password:process.env.DBPASSWORD||'inDfxhNebE',
-        database:process.env.DBDATABASE||'1baCA5TYVo',
-        dialect:"mysql"
-
-    }
+        host: "dpg-ceiid2la499eu91e3tt0-a.singapore-postgres.render.com",
+        port: "5432",
+        username: "demo_zf2b_user",
+        password: "DahSDDkWkpHwtP7lmD9Er034DdxrlKx8",
+        database: "demo_zf2b",
+        dialect: "postgres",
+        ssl: true,
+    },
 ];
 
-module.exports=DBConnectorSetting;
+module.exports = DBConnectorSetting;

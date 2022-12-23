@@ -1,23 +1,21 @@
-const Sequelize = require('sequelize');
-const MySequenlize = require('../utils/Sequelize');
+const Sequelize = require("sequelize");
+const MySequenlize = require("../utils/Sequelize");
 
-let StatusOrder = MySequenlize.define('status_orders', {
+let StatusOrder = MySequenlize.define("status_orders", {
     id: {
-        type: Sequelize.BIGINT(20),
+        type: Sequelize.BIGINT,
         // autoIncrement: true,
         allowNull: false,
         //allowNull: true,
-        primaryKey: true
+        primaryKey: true,
     },
     orderStatusName: {
         type: Sequelize.STRING(64),
-        allowNull: false
-    }, 
+        allowNull: false,
+    },
     description: {
         type: Sequelize.STRING(256),
-        allowNull: true
+        allowNull: true,
     },
-
 });
-module.exports=StatusOrder;
-
+module.exports = StatusOrder;

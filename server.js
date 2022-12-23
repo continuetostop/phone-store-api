@@ -1,17 +1,16 @@
-const Express = require('express');
-const BodyParser = require('body-parser');
-const MethodOverride = require('method-override');
-const bodyParser = require('body-parser');
+const Express = require("express");
+const BodyParser = require("body-parser");
+const MethodOverride = require("method-override");
+const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
-const fileupload = require('express-fileupload');
+const fileupload = require("express-fileupload");
 
+const MySequenlize = require("./app/utils/Sequelize");
+const Role = require("./app/models/Role.model");
+const StatusOrder = require("./app/models/StatusOrder.model");
+const db = require("./app/models/index");
 
-const MySequenlize = require('./app/utils/Sequelize');
-const Role = require('./app/models/Role.model');
-const StatusOrder = require('./app/models/StatusOrder.model');
-const db = require('./app/models/index')
-
-const Ngrok = require('ngrok');
+const Ngrok = require("ngrok");
 
 const port = process.env.PORT || 8080;
 
@@ -26,41 +25,53 @@ const port = process.env.PORT || 8080;
 
 let app = Express();
 
-app.use(BodyParser.json({
-    limit: '5mb'
-}))
-app.use(fileupload({
-    useTempFiles: true
-}));
-app.use(bodyParser.json({
-    type: 'application/vnd.api+json'
-}))
+app.use(
+    BodyParser.json({
+        limit: "5mb",
+    })
+);
+app.use(
+    fileupload({
+        useTempFiles: true,
+    })
+);
+app.use(
+    bodyParser.json({
+        type: "application/vnd.api+json",
+    })
+);
 
-app.use(bodyParser.urlencoded({
-    limit: '5mb',
-    extended: true
-}))
+app.use(
+    bodyParser.urlencoded({
+        limit: "5mb",
+        extended: true,
+    })
+);
 
-app.use(MethodOverride('X-HTTP-Method-Override'));
+app.use(MethodOverride("X-HTTP-Method-Override"));
 
 app.use(
     cookieSession({
         name: "cookie",
         secret: "COOKIE_SECRET", // should use as secret environment variable
-        // httpOnly: true,
-        httpOnly: false,
-        // sameSite: 'strict'
+        httpOnly: true,
+        // httpOnly: false,
+        sameSite: "strict",
         //sameSite: 'none'
     })
 );
 
-app.all('/*', [require('./app/middlewares/AllowCossDomain')]);
+app.all("/*", [require("./app/middlewares/AllowCossDomain")]);
 
-app.use(Express.static(__dirname + '/public'));
+app.use(Express.static(__dirname + "/public"));
 try {
-
-    MySequenlize.sync()
+    //MySequenlize.sync()
     // MySequenlize.sync({alert:true});
+    MySequenlize.sync({ force: true })
+        .then(() => console.log("Users data have been saved"))
+        .catch((error) => {
+            console.log(error);
+        });
     // MySequenlize.sync({ force: true }).then(() => {
     //     Role.bulkCreate([
     //         { name: "admin" },
@@ -78,15 +89,15 @@ try {
     //         .then(() => console.log("Users data have been saved"));
     // })
 } catch (err) {
-    console.log(err)
+    console.log(err);
 }
 
-app.get('/', function (req, res) {
+app.get("/", function (req, res) {
     // console.log('debug');
     res.send("Hello World");
 });
-require('./app/routes')(app);
+require("./app/routes")(app);
 // const host = '0.0.0.0';
 app.listen(port, () => {
     console.log(`Server app running on port ${port}!`);
-})
+});
