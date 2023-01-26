@@ -1,79 +1,85 @@
-const GroupProductManager = require('../manager/GroupProductManager');
-const Rest = require('../utils/Restware');
+const GroupProductManager = require("../manager/GroupProductManager");
+const Rest = require("../utils/Restware");
 
 module.exports = {
     create: (req, res) => {
-        let data = req.body || '';
-        let options=null;
-        if(!(data===''||Object.keys(data).length===0)){
-            options=data.option;
-            delete data.option;      
+        let data = req.body || "";
+        let options = null;
+        if (!(data === "" || Object.keys(data).length === 0)) {
+            options = data.option;
+            delete data.option;
         }
-        GroupProductManager.create(data,options, (errorCode, errorMessage, httpCode, errorDescription, result) => {
-            if (errorCode) {
-                return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
+        GroupProductManager.create(
+            data,
+            options,
+            (errorCode, message, data, httpCode) => {
+                return Rest.sendData(res, errorCode, message, data, httpCode);
             }
-            let resData = {};
-
-            resData.id = result.id;
-            return Rest.sendSuccessOne(res, resData, httpCode);
-        })
+        );
     },
 
     getOne: (req, res) => {
         let id = req.params.id;
 
-        GroupProductManager.getOne(id, (errorCode, errorMessage, httpCode, errorDescription, result) => {
-            if (errorCode) {
-                return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
-            }
-            return Rest.sendSuccessOne(res, result, httpCode);
-        })
+        GroupProductManager.getOne(id, (errorCode, message, data, httpCode) => {
+            return Rest.sendData(res, errorCode, message, data, httpCode);
+        });
     },
     getByCategory: (req, res) => {
         let id = req.params.categoryId;
-        let query = req.query || '';
+        let query = req.query || "";
 
-        GroupProductManager.getByCategory(id,query, (errorCode, errorMessage, httpCode, errorDescription, result) => {
-            if (errorCode) {
-                return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
+        GroupProductManager.getByCategory(
+            id,
+            query,
+            (errorCode, message, data, httpCode) => {
+                return Rest.sendData(res, errorCode, message, data, httpCode);
             }
-            return Rest.sendSuccessOne(res, result, httpCode);
-        })
+        );
     },
 
     getAll: (req, res) => {
         //let query = req.params || '';
-        let query = req.query || '';
-        GroupProductManager.getAll(query, (errorCode, errorMessage, httpCode, errorDescription, result) => {
-            if (errorCode) {
-                return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
+        let query = req.query || "";
+        GroupProductManager.getAll(
+            query,
+            (errorCode, message, data, httpCode) => {
+                return Rest.sendData(res, errorCode, message, data, httpCode);
             }
-            return Rest.sendSuccessMany(res, result, httpCode);
-        })
+        );
     },
     update: (req, res) => {
         let id = req.params.id;
-        let data = req.body || '';
-        GroupProductManager.update(id, data, (errorCode, errorMessage, httpCode, errorDescription, result) => {
-            if (errorCode) {
-                return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
+        let data = req.body || "";
+        let options = null;
+        if (!(data === "" || Object.keys(data).length === 0)) {
+            options = data.option;
+            delete data.option;
+        }
+        GroupProductManager.update(
+            id,
+            data,
+            options,
+            (errorCode, message, data, httpCode) => {
+                return Rest.sendData(res, errorCode, message, data, httpCode);
             }
-            let resData = {};
-            resData.id = result;
-            return Rest.sendSuccessOne(res, result, httpCode);
-        })
+        );
     },
     delete: (req, res) => {
         let id = req.params.id;
-        GroupProductManager.delete(id, (errorCode, errorMessage, httpCode, errorDescription, result) => {
-            if (errorCode) {
-                return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
-            }
+        GroupProductManager.delete(id, (errorCode, message, data, httpCode) => {
             let resData = {};
-            resData.id = result;
-            return Rest.sendSuccessOne(res, result, httpCode);
-        })
-    }
+            return Rest.sendData(res, errorCode, message, data, httpCode);
+        });
+    },
+    getOptionByGroupProduct: (req, res) => {
+        let groupProductId = req.params.groupProductId;
 
-}
+        GroupProductManager.getOptionByGroupProduct(
+            groupProductId,
+            (errorCode, message, data, httpCode) => {
+                return Rest.sendData(res, errorCode, message, data, httpCode);
+            }
+        );
+    },
+};

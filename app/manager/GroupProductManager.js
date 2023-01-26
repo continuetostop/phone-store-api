@@ -1,305 +1,461 @@
-const Validator = require('validator');
-const { Op } = require('sequelize');
+const Validator = require("validator");
+const { Op } = require("sequelize");
 
+const Constant = require("../utils/Constant");
+const Pieces = require("../utils/Pieces");
 
-const Constant = require('../utils/Constant');
-const Pieces = require('../utils/Pieces');
-
-const GroupProduct = require('../models/GroupProduct.model');
-const ProductDetail = require('../models/ProductDetail.model');
-const Option = require('../models/Option.model');
-const ProductDetailOption = require('../models/ProductDetailOption.model');
-const Category = require('../models/Category.model');
-
-const handerProductDetail = require('../myfunction/handlerProductDetail')
+const GroupProduct = require("../models/GroupProduct.model");
+const ProductDetail = require("../models/ProductDetail.model");
+const Option = require("../models/Option.model");
+const Category = require("../models/Category.model");
+const handlerRawJson = require("../myfunction/handlerRawJson");
+const handerProductDetail = require("../myfunction/handlerProductDetail");
 
 module.exports = {
     create: async (data, options, callback) => {
         try {
-            if (!Pieces.ValidTypeCheck(data.categoryId, 'String', 0, 20) || !Validator.isDecimal(data.categoryId)) {
-                return callback(1, 'invalid_category_id', 400, 'category id is not a interger', null);
+            if (
+                !Pieces.ValidTypeCheck(data.categoryId, "String", 0, 20) ||
+                !Validator.isDecimal(data.categoryId)
+            ) {
+                return callback(
+                    1,
+                    "Id of category is not interger.",
+                    null,
+                    400
+                );
             }
-            if (!Pieces.ValidTypeCheck(data.name, 'String')) {
-                return callback(1, 'invalid_group_product_name', 400, 'group product name is not a string', null);
-            }
-            if (!Pieces.ValidTypeCheck(data.price, 'String', 0, 20) || !Validator.isDecimal(data.price)) {
-                return callback(1, 'invalid_group_product_price', 400, 'group product price is not a interger', null);
-            }
-            if (!Pieces.ValidTypeCheck(data.image, 'String')) {
-                return callback(1, 'invalid_product_image', 400, 'product image is not a string', null);
-            }
-            if (!Pieces.ValidTypeCheck(data.description, 'String')) {
-                return callback(1, 'invalid_group_product_description', 400, 'group product description is not a string', null);
-            }
-            // if (!Pieces.ValidTypeCheck(data.specific, 'String')) {
-            //     return callback(1, 'invalid_group_product_specific', 400, 'group product specific is not a string', null);
-            // }
-            if (!Pieces.ValidTypeCheck(data.services, 'String')) {
-                return callback(1, 'invalid_group_product_services', 400, 'group product services is not a string', null);
+            if (!Pieces.ValidTypeCheck(data.name, "String")) {
+                return callback(
+                    1,
+                    "Name group product is not string.",
+                    null,
+                    400
+                );
             }
 
-            let groupProductData = {};
-            let productDataDetail = {};
-            groupProductData.name = data.name;
-            productDataDetail.price = data.price;
-            productDataDetail.image = data.image;
-            groupProductData.description = data.description;
-            groupProductData.specific = data.specific;
-            groupProductData.services = data.services;
-            // groupProductData.option = data.option;
-            //console.log(groupProductData);
-            let resultGroupProduct
-            let resultProductDetail;
+            if (!Pieces.ValidTypeCheck(data.description, "String")) {
+                return callback(
+                    1,
+                    "Description group product is not string.",
+                    null,
+                    400
+                );
+            }
+
+            if (!Pieces.ValidTypeCheck(data.services, "String")) {
+                return callback(
+                    1,
+                    "Services group product is not string.",
+                    null,
+                    400
+                );
+            }
+
+            let { name, description, specific, services } = data;
+            let groupProductData = {
+                name,
+                description,
+                specific,
+                services,
+            };
+            let resultGroupProduct;
             let resultCategory;
-            let resultProductDetailValue;
             let resultOption;
-            let arrValueOption = [];
-            let valueOption;
-            let arraOptionId = [];
             let groupProductId;
             let result;
+            let resultGroupProductData;
             // let resultOption;
-            resultGroupProduct = await GroupProduct.create(groupProductData)
-
-            resultProductDetail = await ProductDetail.create(productDataDetail)
-
-            resultGroupProduct.addProduct_details([resultProductDetail.id])
+            resultGroupProduct = await GroupProduct.create(groupProductData);
 
             groupProductId = resultGroupProduct.id;
-            resultCategory = await Category.findByPk(data.categoryId)
+            resultCategory = await Category.findByPk(data.categoryId);
+
             resultCategory.addGroup_products([groupProductId]);
+            resultGroupProductData = { ...groupProductData };
+            resultGroupProductData.id = resultGroupProduct.id;
+            resultGroupProductData.category = resultCategory.name;
+            let dataOptionClone;
+            dataOptionClone = handlerRawJson(options);
             Promise.all(
-                options.map(async (option) => {
+                dataOptionClone.map(async (option) => {
                     try {
-                        let dataOptionClone, dataOption;
-                        if (typeof (option) == 'object') {
-                            dataOption = option
-                        }
-                        else {
-                            dataOption = await JSON.parse(option);
-                        }
-                        dataOptionClone = await { ...dataOption }
-
-                        delete dataOption.value
-                        resultOption = await Option.create(dataOption);
-                        result = resultGroupProduct.addOptions([resultOption.id])
-                        resultProductDetail.addOptions([resultOption.id], { through: { value: dataOptionClone.value } })
-                        resultProductDetailValue = await resultGroupProduct.addOptions([result.optionId])
-
+                        resultOption = await Option.create(option);
+                        result = await resultGroupProduct.addOptions([
+                            resultOption.id,
+                        ]);
                     } catch (err) {
-                        console.log(err);
+                        return callback(
+                            1,
+                            "Create group product is unsuccessful.",
+                            null,
+                            400
+                        );
                     }
-                }))
-            return callback(null, null, 200, null, resultGroupProduct);
+                })
+            );
+            resultGroupProductData.options = dataOptionClone;
+            return callback(
+                0,
+                "Create group product is successful.",
+                resultGroupProductData,
+                201
+            );
         } catch (error) {
-            return callback(1, 'create_group_product_message_fail', 400, error, null);
+            console.log(error);
+            return callback(
+                1,
+                "Create group product is unsuccessful.",
+                null,
+                400
+            );
         }
     },
-    getOne: (id, callback) => {
+    getOne: async (id, callback) => {
         try {
-            if (!(Pieces.ValidTypeCheck(id, 'String', 0, 20) && Validator.isDecimal(id))) {
-                return callback(1, 'invalid_group_product_id', 400, 'id of group product is not a integer', null);
+            if (
+                !(
+                    Pieces.ValidTypeCheck(id, "String", 0, 20) &&
+                    Validator.isDecimal(id)
+                )
+            ) {
+                return callback(
+                    1,
+                    "Id group product is not interger",
+                    null,
+                    400
+                );
             }
             let where = { id: id };
-
-            GroupProduct.findOne({
-                where: where,
-                include: {
-                    model: ProductDetail,
+            try {
+                let data = await GroupProduct.findOne({
+                    where: where,
                     include: {
-                        model: Option,
-
+                        model: ProductDetail,
+                        include: {
+                            model: Option,
+                        },
                     },
-                },
-            }).then((result) => {
-                let groupProductData = {}
-                groupProductData.id = result.id;
-                groupProductData.name = result.name;
-                groupProductData.price = parseInt(result.price);
-                groupProductData.image = result.image;
-                groupProductData.description = result.description;
-                groupProductData.specific = result.specific;
-                groupProductData.services = result.services;
-                //console.log(JSON.stringify(result));
-                //return result;
-                return handerProductDetail(result)
-            }).then(result => {
-                'use strict';
-                return callback(null, null, 200, null, result);
-            }).catch(function (error) {
-                return callback(1, 'invail_group_product', 403, error, null);
-            });
-
+                });
+                let result = handerProductDetail(data);
+                return callback(
+                    0,
+                    "Get group product is successful.",
+                    result,
+                    200
+                );
+            } catch (error) {
+                return callback(
+                    1,
+                    "Get group product is unsuccessful.",
+                    null,
+                    400
+                );
+            }
         } catch (error) {
-            return callback(1, 'invail_group_product', 400, error, null);
+            return callback(1, "Get group product is unsuccessful.", null, 400);
         }
     },
-    getByCategory: (id, query, callback) => {
+    getByCategory: async (id, query, callback) => {
         try {
             let where = { categoryId: id };
 
-            let page = 1;
-            let perPage = Constant.DEFAULT_PAGING_SIZE;
-
-
-            if ((Pieces.ValidTypeCheck(query['page'], 'String') && Validator.isDecimal(query['page']))
-                || (Pieces.ValidTypeCheck(query['page'], 'Number'))
-            ) {
-                page = parseInt(query['page']);
-                if (page === 0)
-                    page = 1;
-            }
-
-            if ((Pieces.ValidTypeCheck(query['perPage'], 'String') && Validator.isDecimal(query['perPage']))
-                || (Pieces.ValidTypeCheck(query['perPage'], 'Number'))
-            ) {
-                perPage = parseInt(query['perPage']);
-                if (perPage <= 0)
-                    perPage = Constant.DEFAULT_PAGING_SIZE;
-            }
-
-            GroupProduct.findAndCountAll({
-                where: where,
-                include: ProductDetail,
-            })
-                .then((data) => {
-                    let groupProducts = [];
-                    Promise.all(
-                        data.rows.map((i) => {
-                            let groupProduct = {}
-                            i.price = i.product_details[0].price
-                            groupProduct.id = i.id;
-                            groupProduct.name = i.name;
-                            groupProduct.price = parseInt(i.product_details[0].price)
-                            groupProduct.image = i.product_details[0].image
-                            delete i.product_details;
-                            groupProducts.push(groupProduct)
-                        })
-                    )
-
-
-                    return callback(null, null, 200, null, groupProducts);
-                }).catch(function (error) {
-                    return callback(1, 'Find_and_get_all_group_product_fail', 420, error, null);
+            try {
+                let data = await GroupProduct.findAndCountAll({
+                    where: where,
+                    include: ProductDetail,
                 });
+                let groupProducts = [];
+
+                data.rows.map((i) => {
+                    let groupProduct = {};
+                    if (i.product_details.length === 0) return;
+
+                    groupProduct.id = i.id;
+                    groupProduct.name = i.name;
+                    groupProduct.price = +i.product_details[0].price;
+                    groupProduct.image = i.product_details[0].image;
+                    delete i.product_details;
+                    groupProducts.push(groupProduct);
+                });
+
+                return callback(
+                    0,
+                    "Get group product by category is successful.",
+                    groupProducts,
+                    200
+                );
+            } catch (error) {
+                return callback(
+                    1,
+                    "Get group product by category is unsuccessful.",
+                    null,
+                    400
+                );
+            }
         } catch (error) {
-            return callback(1, 'Get_all_group_product_fail', 400, error, null);
+            return callback(
+                1,
+                "Get group product by category is unsuccessful.",
+                null,
+                400
+            );
         }
     },
-    getAll: (query, callback) => {
+    getAll: async (query, callback) => {
         try {
             let where = {};
-            let page = 1;
-            let perPage = Constant.DEFAULT_PAGING_SIZE;
-            if (Pieces.ValidTypeCheck(query.q, 'String')) {
+            if (Pieces.ValidTypeCheck(query.q, "String")) {
                 where.name = { [Op.substring]: query.q };
             }
 
-            if ((Pieces.ValidTypeCheck(query['page'], 'String') && Validator.isDecimal(query['page']))
-                || (Pieces.ValidTypeCheck(query['page'], 'Number'))
-            ) {
-                page = parseInt(query['page']);
-                if (page === 0)
-                    page = 1;
-            }
-
-            if ((Pieces.ValidTypeCheck(query['perPage'], 'String') && Validator.isDecimal(query['perPage']))
-                || (Pieces.ValidTypeCheck(query['perPage'], 'Number'))
-            ) {
-                perPage = parseInt(query['perPage']);
-                if (perPage <= 0)
-                    perPage = Constant.DEFAULT_PAGING_SIZE;
-            }
-            GroupProduct.findAndCountAll({
-                where: where,
-                include: ProductDetail,
-
-            })
-                .then((data) => {
-                    // let pages = Math.ceil(data.count / perPage);
-                    let groupProducts = [];
-                    Promise.all(
-                        data.rows.map((i) => {
-                            let groupProduct = {}
-                            i.price = i.product_details[0].price
-                            groupProduct.id = i.id;
-                            groupProduct.name = i.name;
-                            groupProduct.description = i.description;
-                            groupProduct.specific = i.specific;
-                            groupProduct.services = i.services;
-                            groupProduct.price = parseInt(i.product_details[0].price)
-                            groupProduct.image = i.product_details[0].image
-                            delete i.product_details;
-                            groupProducts.push(groupProduct)
-                        })
-                    )
-
-                    return callback(null, null, 200, null, groupProducts);
-                }).catch(function (error) {
-                    return callback(1, 'Find_and_get_all_group_product_fail', 420, error, null);
+            try {
+                let data = await GroupProduct.findAndCountAll({
+                    where: where,
+                    include: ProductDetail,
                 });
+
+                let groupProducts = [];
+                data.rows.map((i) => {
+                    let groupProduct = {};
+                    if (i.product_details.length === 0) return;
+                    i.price = i.product_details[0].price;
+
+                    let { id, name } = i;
+                    groupProduct = {
+                        id,
+                        name,
+                    };
+                    groupProduct.price = parseInt(i.product_details[0].price);
+                    groupProduct.image = i.product_details[0].image;
+                    groupProducts.push(groupProduct);
+                });
+
+                return callback(
+                    0,
+                    "Get all or find group product is successful.",
+                    groupProducts,
+                    200
+                );
+            } catch (error) {
+                return callback(
+                    1,
+                    "Get all or find group product is unsuccessful.",
+                    null,
+                    400
+                );
+            }
         } catch (error) {
-            return callback(1, 'Get_all_group_product_fail', 400, error, null);
+            return callback(
+                1,
+                "Get all or find group product is unsuccessful.",
+                null,
+                400
+            );
         }
     },
 
-    update: (id, data, callback) => {
+    update: async (id, data, options, callback) => {
         try {
             let update = {};
             let where = {};
-            if (!(Pieces.ValidTypeCheck(id, 'String', 1, 20) && Validator.isDecimal(id))) {
-                return callback(1, 'Invalid_group_product_id', 400, 'Id of group product is not a integer', null);
+            let result, resultUpdate;
+            if (
+                !(
+                    Pieces.ValidTypeCheck(id, "String", 1, 20) &&
+                    Validator.isDecimal(id)
+                )
+            ) {
+                return callback(
+                    1,
+                    "Id of group product is not a integer.",
+                    null,
+                    400
+                );
             }
 
             where.id = id;
-            if (Pieces.ValidTypeCheck(data.name, 'String')) {
+            if (Pieces.ValidTypeCheck(data.name, "String")) {
                 update.name = data.name;
             }
-            if (Pieces.ValidTypeCheck(data.description, 'String')) {
+            if (Pieces.ValidTypeCheck(data.description, "String")) {
                 update.description = data.description;
             }
-            // if (Pieces.ValidTypeCheck(data.specific, 'String')) {
-            //     update.specific = data.specific;
-            // }
-            if (Pieces.ValidTypeCheck(data.services, 'String')) {
+            if (Pieces.ValidTypeCheck(data.services, "String")) {
                 update.services = data.services;
             }
 
-            GroupProduct.update(update,
-                { where: where }).then(result => {
-                    "use strict";
-                    if (result !== null && (result.length > 0) && (result[0] > 0)) {
-                        return callback(null, null, 200, null, id);
+            let dataOptionClone;
+            dataOptionClone = handlerRawJson(options);
+            try {
+                if (
+                    !(
+                        Object.keys(update).length === 0 &&
+                        update.constructor === Object
+                    )
+                ) {
+                    result = await GroupProduct.update(update, {
+                        where: where,
+                    });
+
+                    if (result !== null && result.length > 0 && result[0] > 0) {
+                        resultUpdate = await GroupProduct.findByPk(id);
                     } else {
-                        return callback(1, 'Update_group_product_fail', 400, '', null);
+                        return callback(
+                            1,
+                            "Update group product is unsuccessful.",
+                            null,
+                            400
+                        );
                     }
-                }).catch(function (error) {
-                    "use strict";
-                    return callback(1, 'Update_group_product_fail', 420, error, null);
+                }
+            } catch (error) {
+                return callback(
+                    1,
+                    "Update group product is unsuccessful.",
+                    null,
+                    400
+                );
+            }
 
-                });
+            try {
+                if (dataOptionClone) {
+                    Promise.all(
+                        dataOptionClone?.map(async (option) => {
+                            try {
+                                let where = {};
+                                where.id = option.id;
+                                where.groupProductId = id;
+                                let update = { ...option };
+                                delete update.id;
+                                resultOption = await Option.update(update, {
+                                    where: where,
+                                });
+                            } catch (error) {
+                                return callback(
+                                    1,
+                                    "Update group product is unsuccessful.",
+                                    null,
+                                    410
+                                );
+                            }
+                        })
+                    );
+                }
+            } catch (error) {
+                return callback(
+                    1,
+                    "Update group product is unsuccessful.",
+                    null,
+                    400
+                );
+            }
+            resultUpdate = await GroupProduct.findByPk(id, {
+                include: {
+                    model: Option,
+                },
+            });
+            return callback(
+                0,
+                "Update group product is successful.",
+                resultUpdate,
+                200
+            );
         } catch (error) {
-            "use strict";
-            return callback(1, 'Update_group_product_fail', 400, error, null);
-
+            console.log(error);
+            return callback(
+                1,
+                "Update group product is unsuccessful.",
+                error,
+                400
+            );
         }
     },
     delete: function (id, callback) {
         try {
-            if (!(Pieces.ValidTypeCheck(id, 'String', 0, 20) && Validator.isDecimal(id))) {
-                return callback(1, 'Invalid_group_product_id', 400, 'id of group product is not a integer', null);
+            if (
+                !(
+                    Pieces.ValidTypeCheck(id, "String", 0, 20) &&
+                    Validator.isDecimal(id)
+                )
+            ) {
+                return callback(
+                    1,
+                    "Id of group product is not a integer.",
+                    update,
+                    400
+                );
             }
             let where = { id: id };
-            GroupProduct.destroy({ where: where }).then(result => {
-                return callback(null, null, 200, null, result);
-            }).catch(function (error) {
-                return callback(1, 'Delete_group_product_fail', 420, error);
-            });
+            GroupProduct.destroy({ where: where })
+                .then((result) => {
+                    return callback(
+                        0,
+                        "Delete group product is successful.",
+                        result,
+                        200
+                    );
+                })
+                .catch(function (error) {
+                    return callback(
+                        1,
+                        "Delete group product is unsuccessful.",
+                        null,
+                        400
+                    );
+                });
+        } catch (error) {
+            return callback(
+                1,
+                "Delete group product is unsuccessful.",
+                null,
+                400
+            );
         }
-        catch (error) {
-            return callback(1, 'Delete_group_product_fail', 400, error);
-
+    },
+    getOptionByGroupProduct: async (groupProductId, callback) => {
+        try {
+            if (
+                !(
+                    Pieces.ValidTypeCheck(groupProductId, "String", 0, 20) &&
+                    Validator.isDecimal(groupProductId)
+                )
+            ) {
+                return callback(
+                    1,
+                    "Id of group product is not a integer.",
+                    null,
+                    400
+                );
+            }
+            let where = { groupProductId: groupProductId };
+            let resultOption;
+            try {
+                resultOption = await Option.findAll({
+                    where: where,
+                    attributes: ["id", "name", "unit"],
+                });
+                return callback(
+                    0,
+                    "Get option by group product is successful.",
+                    resultOption,
+                    200
+                );
+            } catch (error) {
+                return callback(
+                    1,
+                    "Get option by group product is unsuccessful.",
+                    null,
+                    400
+                );
+            }
+        } catch (error) {
+            return callback(
+                1,
+                "Get option by group product is unsuccessful.",
+                null,
+                400
+            );
         }
-    }
-
-}
+    },
+};

@@ -1,7 +1,6 @@
 const Express = require("express");
 const BodyParser = require("body-parser");
 const MethodOverride = require("method-override");
-const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const fileupload = require("express-fileupload");
 
@@ -36,13 +35,13 @@ app.use(
     })
 );
 app.use(
-    bodyParser.json({
+    BodyParser.json({
         type: "application/vnd.api+json",
     })
 );
 
 app.use(
-    bodyParser.urlencoded({
+    BodyParser.urlencoded({
         limit: "5mb",
         extended: true,
     })
@@ -55,9 +54,7 @@ app.use(
         name: "cookie",
         secret: "COOKIE_SECRET", // should use as secret environment variable
         httpOnly: true,
-        // httpOnly: false,
         sameSite: "strict",
-        //sameSite: 'none'
     })
 );
 

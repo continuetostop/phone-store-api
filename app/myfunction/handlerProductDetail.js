@@ -1,41 +1,36 @@
 const handerProductDetail = (data) => {
-    let groupProductData = {}
-    groupProductData.id = data.id;
-    groupProductData.name = data.name;
-    groupProductData.price = parseInt(data.price);
-    groupProductData.image = data.image;
-    groupProductData.description = data.description;
-    groupProductData.specific = data.specific;
-    groupProductData.services = data.services;
-    groupProductData.product_details = []
-    groupProductData.options = []
+    let { id, name, image, description, specific, services } = data;
+    let groupProductData = { id, name, image, description, specific, services };
+    groupProductData.product_details = [];
+    groupProductData.options = [];
+    // if (!data.product_details[0]) return null;
+    if (data.product_details.length === 0) return null;
 
     data.product_details[0].options.map((k, index) => {
         let option = {};
         option.key = k.name;
         option.value = [];
-        groupProductData.options.push(option)
-    }
-    )
-    data.product_details.map((i) => {
-        let data = {}
-        data.id = i.id;
-        // data.name = i.name;
-        data.price = parseInt(i.price);
-        data.image = i.image;
-        // data.description = i.description;
-        //data.options = []
-        i.options.map((j, index) => {
-           // let dataOptions = {};
+        groupProductData.options.push(option);
+    });
+    data.product_details.map((product_detail) => {
+        let data = {};
+        let { id, image } = product_detail;
+        data = { id, image };
+        data.price = +product_detail.price;
+        product_detail.options.map((j, index) => {
             data[j.name] = j.product_detail_option.value + " " + j.unit;
-            //dataOptions[j.name] = j.product_detail_option.value + " " + j.unit;
-            if (!groupProductData.options[index].value.includes(j.product_detail_option.value + " " + j.unit))
-                groupProductData.options[index].value.push(j.product_detail_option.value + " " + j.unit);
-            //data.options.push(dataOptions)
-        })
-        groupProductData.product_details.push(data)
-    })
+            if (
+                !groupProductData.options[index].value.includes(
+                    j.product_detail_option.value + " " + j.unit
+                )
+            )
+                groupProductData.options[index].value.push(
+                    j.product_detail_option.value + " " + j.unit
+                );
+        });
+        groupProductData.product_details.push(data);
+    });
     return groupProductData;
-}
+};
 
 module.exports = handerProductDetail;

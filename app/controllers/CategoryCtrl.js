@@ -1,62 +1,43 @@
-const CategoryManager = require('../manager/CategoryManager');
-const Rest = require('../utils/Restware');
+const CategoryManager = require("../manager/CategoryManager");
+const Rest = require("../utils/Restware");
 
 module.exports = {
     create: (req, res) => {
-        let data = req.body || '';
-        CategoryManager.create(data, (errorCode, errorMessage, httpCode, errorDescription, result) => {
-            if (errorCode) {
-                return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
-            }
-            let resData = {};
-
-            resData.id = result.id;
-            return Rest.sendSuccessOne(res, resData, httpCode);
-        })
+        let data = req.body || "";
+        CategoryManager.create(data, (errorCode, message, data, httpCode) => {
+            return Rest.sendData(res, errorCode, message, data, httpCode);
+        });
     },
 
     getOne: (req, res) => {
         let id = req.params.id;
 
-        CategoryManager.getOne(id, (errorCode, errorMessage, httpCode, errorDescription, result) => {
-            if (errorCode) {
-                return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
-            }
-            return Rest.sendSuccessOne(res, result, httpCode);
-        })
+        CategoryManager.getOne(id, (errorCode, message, data, httpCode) => {
+            return Rest.sendData(res, errorCode, message, data, httpCode);
+        });
     },
     getAll: (req, res) => {
         //let query = req.params || '';
-        let query = req.query || '';
-        CategoryManager.getAll(query, (errorCode, errorMessage, httpCode, errorDescription, result) => {
-            if (errorCode) {
-                return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
-            }
-            return Rest.sendSuccessMany(res, result, httpCode);
-        })
+        let query = req.query || "";
+        CategoryManager.getAll(query, (errorCode, message, data, httpCode) => {
+            return Rest.sendData(res, errorCode, message, data, httpCode);
+        });
     },
     update: (req, res) => {
         let id = req.params.id;
-        let data = req.body || '';
-        CategoryManager.update(id, data, (errorCode, errorMessage, httpCode, errorDescription, result) => {
-            if (errorCode) {
-                return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
+        let data = req.body || "";
+        CategoryManager.update(
+            id,
+            data,
+            (errorCode, message, data, httpCode) => {
+                return Rest.sendData(res, errorCode, message, data, httpCode);
             }
-            let resData = {};
-            resData.id = result;
-            return Rest.sendSuccessOne(res, result, httpCode);
-        })
+        );
     },
     delete: (req, res) => {
         let id = req.params.id;
-        CategoryManager.delete(id, (errorCode, errorMessage, httpCode, errorDescription, result) => {
-            if (errorCode) {
-                return Rest.sendError(res, errorCode, errorMessage, httpCode, errorDescription);
-            }
-            let resData = {};
-            resData.id = result;
-            return Rest.sendSuccessOne(res, result, httpCode);
-        })
-    }
-
-}
+        CategoryManager.delete(id, (errorCode, message, data, httpCode) => {
+            return Rest.sendData(res, errorCode, message, data, httpCode);
+        });
+    },
+};
