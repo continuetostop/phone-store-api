@@ -256,10 +256,11 @@ module.exports = {
     },
 
     update: async (id, data, options, callback) => {
+        "use strict";
         try {
             let update = {};
             let where = {};
-            let result, resultUpdate;
+            let resultUpdate, resultUpdateGroupProduct, resultUpdateOption;
             if (
                 !(
                     Pieces.ValidTypeCheck(id, "String", 1, 20) &&
@@ -287,6 +288,7 @@ module.exports = {
 
             let dataOptionClone;
             dataOptionClone = handlerRawJson(options);
+
             try {
                 if (
                     !(
@@ -294,20 +296,12 @@ module.exports = {
                         update.constructor === Object
                     )
                 ) {
-                    result = await GroupProduct.update(update, {
-                        where: where,
-                    });
-
-                    if (result !== null && result.length > 0 && result[0] > 0) {
-                        resultUpdate = await GroupProduct.findByPk(id);
-                    } else {
-                        return callback(
-                            1,
-                            "Update group product is unsuccessful.",
-                            null,
-                            400
-                        );
-                    }
+                    resultUpdateGroupProduct = await GroupProduct.update(
+                        update,
+                        {
+                            where: where,
+                        }
+                    );
                 }
             } catch (error) {
                 return callback(
@@ -320,29 +314,31 @@ module.exports = {
 
             try {
                 if (dataOptionClone) {
-                    Promise.all(
-                        dataOptionClone?.map(async (option) => {
+                    resultUpdateOption = await Promise.all(
+                        dataOptionClone.map(async (option) => {
                             try {
                                 let where = {};
                                 where.id = option.id;
                                 where.groupProductId = id;
                                 let update = { ...option };
                                 delete update.id;
-                                resultOption = await Option.update(update, {
+                                let updated = await Option.update(update, {
                                     where: where,
                                 });
+                                return updated[0];
                             } catch (error) {
                                 return callback(
                                     1,
                                     "Update group product is unsuccessful.",
                                     null,
-                                    410
+                                    400
                                 );
                             }
                         })
                     );
                 }
             } catch (error) {
+                console.log(error);
                 return callback(
                     1,
                     "Update group product is unsuccessful.",
@@ -350,23 +346,32 @@ module.exports = {
                     400
                 );
             }
-            resultUpdate = await GroupProduct.findByPk(id, {
-                include: {
-                    model: Option,
-                },
-            });
-            return callback(
-                0,
-                "Update group product is successful.",
-                resultUpdate,
-                200
-            );
+            if (resultUpdateGroupProduct || resultUpdateOption) {
+                resultUpdate = await GroupProduct.findByPk(id, {
+                    include: {
+                        model: Option,
+                    },
+                });
+                return callback(
+                    0,
+                    "Update group product is successful.",
+                    resultUpdate,
+                    200
+                );
+            } else {
+                return callback(
+                    1,
+                    "Update group product is unsuccessful.",
+                    null,
+                    400
+                );
+            }
         } catch (error) {
             console.log(error);
             return callback(
                 1,
                 "Update group product is unsuccessful.",
-                error,
+                null,
                 400
             );
         }

@@ -68,7 +68,6 @@ module.exports = {
     delete: (req, res) => {
         let id = req.params.id;
         GroupProductManager.delete(id, (errorCode, message, data, httpCode) => {
-            let resData = {};
             return Rest.sendData(res, errorCode, message, data, httpCode);
         });
     },
