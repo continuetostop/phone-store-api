@@ -1,6 +1,3 @@
 node_modules/
-ref.txt
-tmp
-test/
 .env
 package-lock.json

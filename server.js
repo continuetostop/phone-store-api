@@ -1,26 +1,14 @@
 const Express = require("express");
 const BodyParser = require("body-parser");
 const MethodOverride = require("method-override");
-const cookieSession = require("cookie-session");
-const fileupload = require("express-fileupload");
 
 const MySequenlize = require("./app/utils/Sequelize");
 const Role = require("./app/models/Role.model");
 const StatusOrder = require("./app/models/StatusOrder.model");
 const db = require("./app/models/index");
 
-const Ngrok = require("ngrok");
 
 const port = process.env.PORT || 8080;
-
-// console.log(process.env.PORT);
-// token = '1ouoc8rz6vlbN0ogudeEfHrPDxX_6seu3PQbofh1X2RgT7VaV';
-// // Creating Ngrok Tunnel
-// (async function () {
-//     const url = await Ngrok.connect({ authtoken: token, addr: port });
-//     //console.log('Your url: ' + Reset, url);
-//     console.log(url);
-// })();
 
 let app = Express();
 
@@ -29,11 +17,7 @@ app.use(
         limit: "5mb",
     })
 );
-app.use(
-    fileupload({
-        useTempFiles: true,
-    })
-);
+
 app.use(
     BodyParser.json({
         type: "application/vnd.api+json",
@@ -49,14 +33,6 @@ app.use(
 
 app.use(MethodOverride("X-HTTP-Method-Override"));
 
-app.use(
-    cookieSession({
-        name: "cookie",
-        secret: "COOKIE_SECRET", // should use as secret environment variable
-        httpOnly: true,
-        sameSite: "strict",
-    })
-);
 
 app.all("/*", [require("./app/middlewares/AllowCossDomain")]);
 
