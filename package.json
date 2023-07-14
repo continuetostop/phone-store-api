@@ -2,16 +2,10 @@
   "name": "api-apple-store",
   "version": "1.0.0",
   "description": "",
-  "apidoc": {
-    "title": "api document apple store",
-    "url": "",
-    "sampleUrl": "http://localhost:3000/"
-  },
   "main": "server.js",
   "scripts": {
-    "debug": "nodemon server.js",
-    "start": "node server.js",
-    "genAPIDoc": "apidoc -i ./app/route/ -o ./public/docs/"
+    "dev": "nodemon server.js",
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
@@ -25,8 +19,6 @@
     "jsonwebtoken": "^9.0.1",
     "method-override": "^3.0.0",
     "mysql2": "^3.5.1",
-    "pg": "^8.8.0",
-    "pg-hstore": "^2.3.4",
     "sequelize": "^6.22.0",
     "validator": "^13.7.0"
   },
